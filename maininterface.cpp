@@ -425,6 +425,7 @@ void MainInterface::tableDataUpdate()
             model->appendRow(item);
         }
         else{
+            qDebug()<<i;
             continue;
         }
     }
