@@ -48,7 +48,6 @@ public:
     void initHardware();
     void submitTable();
     QStandardItemModel *model;
-    bool is_table_edit;
     /*标志数据表格的状态，0x00显示态，0x01数据编辑态，0x02段选态,0x03行删除态*/
     char table_state;
     KeyBoard *keyboard;
@@ -59,6 +58,8 @@ public:
     ~MainInterface();
 
 private:
+    /*标志段选开始行和结束行*/
+    bool start_or_end;
     /*标志键盘是否已经被按下*/
     bool key_pressed;
     Ui::MainInterface *ui;
@@ -73,6 +74,7 @@ signals:
 public slots:
     void commandFinish();
     void commandSwitch(char ,char ,char ,char);
+    void tableSelect(bool);
     void tableStateUpdate(char);
     void tableDataUpdate();
     void tableRollUpdate();

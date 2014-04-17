@@ -39,8 +39,8 @@ int main(int argc, char *argv[])
         "QPushButton:focus{border-color:rgb(96,96,96); background:rgb(128,128,128);}"
         "QPushButton:checked{border-color:lightgray;background:rgb(128,128,128);}"
         "QHeaderView::section{background-color:rgb(128,128,128);color:white;border:1px solid #6c6c6c;}"
+        "QTableView::item{selection-background-color:rgb(255,255,255);}"
                     );
-
     QFont font = a.font();
 
 #ifdef ARM

@@ -82,7 +82,7 @@ const bool bool_init[] = {
 };
 
 const unsigned int uint_init[] = {
-        220, 0, 10, 8, 5, 0, 0,0 ,0 ,10 ,
+        220, 0, 10, 8, 5, 0, 0,0 ,0 ,0 ,
 };
 
 const long long_init[] = {

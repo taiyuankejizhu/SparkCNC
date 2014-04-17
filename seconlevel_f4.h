@@ -26,6 +26,7 @@ private:
 signals:
     void enter(int i);
     void stateChange(char);
+    void selectRows(bool);
     void inputCommand(char ,char ,char ,char);
 public slots:
     void F1();

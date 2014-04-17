@@ -21,6 +21,7 @@ MainInterface::MainInterface(QWidget *parent) :
     ui->setupUi(this);
 
     key_pressed = false;
+    start_or_end = true;
 
 #ifdef ARM
     initHardware();
@@ -192,7 +193,6 @@ void MainInterface::keyPressEvent( QKeyEvent *k )
             else
                 keyboard->setHidden(true);
 */
-
             Fn = barui->findChild<QPushButton *> ("pushButton_F7");
             if(Fn != NULL)
                 Fn->click();
@@ -235,8 +235,18 @@ void MainInterface::keyPressEvent( QKeyEvent *k )
         case Qt::Key_Enter:
             if(table_state == TABLE_EDIT)
                 qDebug()<<"1";
-            else if(table_state == TABLE_SELECT)
-                qDebug()<<"2";
+            else if(table_state == TABLE_SELECT){
+                if(start_or_end){
+                    spark_info->setUInt(UINT_START_ROW ,ui->tableView->currentIndex().row());
+                    qDebug()<<ui->tableView->currentIndex().row();
+                    start_or_end = false;
+                }
+                else{
+                    spark_info->setUInt(UINT_END_ROW ,ui->tableView->currentIndex().row());
+                    qDebug()<<ui->tableView->currentIndex().row();
+                    start_or_end = true;
+                }
+            }
             else if(table_state == TABLE_DELETE){
                 current = ui->tableView->currentIndex().row();
                 model->removeRow(current);
@@ -352,6 +362,8 @@ void MainInterface::tableStateUpdate(char c)
         ui->tableView->setCurrentIndex(start);
         ui->tableView->setFocus();
 
+        tableRollUpdate();
+
         connect(model ,SIGNAL(dataChanged(QModelIndex,QModelIndex)) ,this ,SLOT(tableItemChange(QModelIndex,QModelIndex)));
     }
     else if(table_state == TABLE_SELECT){
@@ -363,6 +375,8 @@ void MainInterface::tableStateUpdate(char c)
         ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
         ui->tableView->selectRow(0);
         ui->tableView->setFocus();
+
+        tableRollUpdate();
     }
     else if(table_state == TABLE_DELETE){
         disconnect(model,0,this ,0);
@@ -373,6 +387,8 @@ void MainInterface::tableStateUpdate(char c)
         ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
         ui->tableView->selectRow(0);
         ui->tableView->setFocus();
+
+        tableRollUpdate();
     }
 }
 
@@ -439,30 +455,54 @@ void MainInterface::tableRollUpdate()
 {
     unsigned int row = 0;
     unsigned int column = 0;
-    for(row = 0;row < abs(model->rowCount());row++){
-        QBrush brush;
-        if(row == spark_info->uint_array[UINT_CURRENT_ROM]){
-            brush = QBrush(QColor(0xFF ,0xCC ,0x00));
+    if(table_state == TABLE_SHOW){
+        for(row = 0;row < abs(model->rowCount());row++){
+            QBrush brush;
+            if(row == spark_info->uint_array[UINT_CURRENT_ROM]){
+                brush = QBrush(QColor(0xFF ,0xCC ,0x00));
+            }
+            else if(row < spark_info->uint_array[UINT_START_ROW]){
+                brush = QBrush(QColor(0xFF ,0xFF ,0xFF));
+            }
+            else if(row < spark_info->uint_array[UINT_CURRENT_ROM]){
+                brush = QBrush(QColor(0x00 ,0xFF ,0x00));
+            }
+            else if(row <= spark_info->uint_array[UINT_END_ROW]){
+                brush = QBrush(QColor(0xFF ,0x00 ,0x00));
+            }
+            else{
+                brush = QBrush(QColor(0xFF ,0xFF ,0xFF));
+            }
+            for(column = 0;column < 11;column ++){
+                QStandardItem* item = model->item(row ,column);
+                item->setBackground(brush);
+            }
         }
-        else if(row < spark_info->uint_array[UINT_START_ROW]){
-            brush = QBrush(QColor(0xFF ,0xFF ,0xFF));
-        }
-        else if(row < spark_info->uint_array[UINT_CURRENT_ROM]){
-            brush = QBrush(QColor(0x00 ,0xFF ,0x00));
-        }
-        else if(row < spark_info->uint_array[UINT_END_ROW]){
-            brush = QBrush(QColor(0xFF ,0x00 ,0x00));
-        }
-        else{
-            brush = QBrush(QColor(0xFF ,0xFF ,0xFF));
-        }
-        for(column = 0;column < 11;column ++){
-            QStandardItem* item = model->item(row ,column);
-            item->setBackground(brush);
+    }
+    else if(table_state == TABLE_SELECT||table_state == TABLE_DELETE||table_state == TABLE_EDIT){
+        for(row = 0;row < abs(model->rowCount());row++){
+            QBrush brush;
+            if(row < spark_info->uint_array[UINT_START_ROW]){
+                brush = QBrush(QColor(0xFF ,0xFF ,0xFF));
+            }
+            else if(row <= spark_info->uint_array[UINT_END_ROW]){
+                brush = QBrush(QColor(0xFF ,0x00 ,0x00));
+            }
+            else{
+                brush = QBrush(QColor(0xFF ,0xFF ,0xFF));
+            }
+            for(column = 0;column < 11;column ++){
+                QStandardItem* item = model->item(row ,column);
+                item->setBackground(brush);
+            }
         }
     }
 }
 
+void MainInterface::tableSelect(bool b)
+{
+    start_or_end = b;
+}
 
 /*数据发生改变时重新排序*/
 void MainInterface::tableItemChange(QModelIndex tl ,QModelIndex br)
@@ -471,20 +511,40 @@ void MainInterface::tableItemChange(QModelIndex tl ,QModelIndex br)
         model->sort(tl.column() ,Qt::AscendingOrder);
         submitTable();
     }
-    else
+    else{
         br.column();
+        submitTable();
+    }
 }
 
 /*检查并提交数据表数据*/
 void MainInterface::submitTable()
 {
     int i = 0, j = 0;
-    bool *ok =false;
+    int min = 0,max = 0;
+    bool *ok = false;
+    bool first = true;
 
+    /*清空数据表，当数据表中的Index字段为0时，该行即为空行*/
     spark_info->tableClear();
 
+    /*根据表格内容填充有效数据行*/
     for(i = 0;i < model->rowCount();i++){
+
         j = 0;
+
+        /*根据行的背景颜色判断开始行和结束行*/
+        QBrush brush = model->item(i , 0)->background();
+        if(brush.operator == (QBrush(QColor(0xFF ,0x00 ,0x00)))&&first){
+            qDebug()<<"start"<<i;
+            min = i;
+            first =false;
+        }
+        else if(brush.operator == (QBrush(QColor(0xFF ,0x00 ,0x00)))&&!first){
+            max = i;
+            qDebug()<<"end"<<i;
+        }
+
         spark_info->table.Shendu[i] = model->item(i,j++)->text().toInt(ok ,10);
         spark_info->table.Dianliu[i] = model->item(i,j++)->text().toUInt(ok ,10);
         spark_info->table.Maikuan[i] = model->item(i,j++)->text().toUInt(ok ,10);
@@ -496,8 +556,12 @@ void MainInterface::submitTable()
         spark_info->table.Mianji[i] = model->item(i,j++)->text().toUInt(ok ,10);
         spark_info->table.Jixin[i] = model->item(i,j++)->text().toUInt(ok ,10);
         spark_info->table.Gaoya[i] = model->item(i,j++)->text().toUInt(ok ,10);
-        spark_info->table.Index[i] = i;
+        /*Index字段不为0*/
+        spark_info->table.Index[i] = i + 1;
     }
+
+    spark_info->setUInt(UINT_START_ROW , min);
+    spark_info->setUInt(UINT_END_ROW , max);
 }
 
 void MainInterface::funcbarUpdate(int i)

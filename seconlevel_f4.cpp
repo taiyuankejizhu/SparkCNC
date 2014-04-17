@@ -46,6 +46,8 @@ seconlevel_f4::seconlevel_f4(QWidget *parent) :
     connect(this ,SIGNAL(inputCommand(char,char,char,char)) ,parent ,SLOT(commandSwitch(char,char,char,char)));
     /*数据表模式改变信号*/
     connect(this ,SIGNAL(stateChange(char)) ,parent ,SLOT(tableStateUpdate(char)));
+    /*段选信号*/
+    connect(this ,SIGNAL(selectRows(bool)) ,parent ,SLOT(tableSelect(bool)));
 
     setFocusPolicy(Qt::NoFocus);
 }
@@ -94,10 +96,13 @@ void seconlevel_f4::F2()
 
 void seconlevel_f4::F3()
 {
-    if(ui->pushButton_F3->isChecked())
+    if(ui->pushButton_F3->isChecked()){
         emit stateChange(TABLE_SELECT);
-    else
+        emit selectRows(true);
+    }
+    else{
         emit stateChange(TABLE_EDIT);
+    }
 
     if(ui->pushButton_F1->isChecked())
         ui->pushButton_F1->click();

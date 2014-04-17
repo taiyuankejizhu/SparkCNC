@@ -17,7 +17,7 @@ void SparkInfo::tableInit()
 {
     int i = 0;
     /*默认的数据表*/
-    if(!uint_array[UINT_TAB_INDEX]){
+    if(uint_array[UINT_TAB_INDEX] == 0){
         for(; i < 10; i++){
             table.Shendu[i] = table_init.Shendu[i];
             table.Dianliu[i] = table_init.Dianliu[i];
@@ -83,12 +83,36 @@ void SparkInfo::setLong(unsigned int i,long l)
 
 void SparkInfo::setUInt(unsigned int i, unsigned int u)
 {
+    unsigned int tmp;
+
     if(i < UINT_LENGTH){
         uint_array[i] = u;
-        if(i == UINT_TAB_INDEX)
+        if(i == UINT_TAB_INDEX){
+            uint_array[UINT_CURRENT_ROM] = 0;
+            uint_array[UINT_START_ROW] = 0;
+            uint_array[UINT_END_ROW] = 0;
             emit tableIndexChange();
-        else if(i==UINT_CURRENT_ROM||i==UINT_START_ROW||i==UINT_END_ROW)
             emit tableRowChange();
+        }
+        /*保证当前行号在开始行和结束行之间*/
+        else if(i==UINT_CURRENT_ROM){
+            if(uint_array[UINT_CURRENT_ROM] < uint_array[UINT_START_ROW]){
+                uint_array[UINT_CURRENT_ROM] = uint_array[UINT_START_ROW];
+            }
+            else if(uint_array[UINT_CURRENT_ROM] > uint_array[UINT_END_ROW]){
+                uint_array[UINT_CURRENT_ROM] = uint_array[UINT_END_ROW];
+            }
+            emit tableRowChange();
+        }
+        /*保证开始行号小于结束行号*/
+        else if(i == UINT_START_ROW||i == UINT_END_ROW){
+            if(uint_array[UINT_START_ROW] > uint_array[UINT_END_ROW]){
+                tmp = uint_array[UINT_START_ROW];
+                uint_array[UINT_START_ROW] = uint_array[UINT_END_ROW];
+                uint_array[UINT_END_ROW] = tmp;
+            }
+            emit tableRowChange();
+        }
         else
             emit uintChange();
     }
