@@ -104,8 +104,12 @@ void SparkInfo::setUInt(unsigned int i, unsigned int u)
             }
             emit tableRowChange();
         }
+        else if(i == UINT_START_ROW){
+            uint_array[UINT_END_ROW] = uint_array[UINT_START_ROW];
+            emit tableRowChange();
+        }
         /*保证开始行号小于结束行号*/
-        else if(i == UINT_START_ROW||i == UINT_END_ROW){
+        else if(i == UINT_END_ROW){
             if(uint_array[UINT_START_ROW] > uint_array[UINT_END_ROW]){
                 tmp = uint_array[UINT_START_ROW];
                 uint_array[UINT_START_ROW] = uint_array[UINT_END_ROW];

@@ -354,6 +354,8 @@ void MainInterface::tableStateUpdate(char c)
         tableRollUpdate();
     }
     else if(table_state == TABLE_EDIT){
+        disconnect(model,0,this ,0);
+
         ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
         ui->tableView->setSelectionBehavior(QAbstractItemView::SelectItems);
         ui->tableView->setFocusPolicy(Qt::StrongFocus);
@@ -361,8 +363,6 @@ void MainInterface::tableStateUpdate(char c)
         start = ui->tableView->model()->index(0 ,0);
         ui->tableView->setCurrentIndex(start);
         ui->tableView->setFocus();
-
-        tableRollUpdate();
 
         connect(model ,SIGNAL(dataChanged(QModelIndex,QModelIndex)) ,this ,SLOT(tableItemChange(QModelIndex,QModelIndex)));
     }
@@ -459,19 +459,19 @@ void MainInterface::tableRollUpdate()
         for(row = 0;row < abs(model->rowCount());row++){
             QBrush brush;
             if(row == spark_info->uint_array[UINT_CURRENT_ROM]){
-                brush = QBrush(QColor(0xFF ,0xCC ,0x00));
+                brush = QBrush(SELECT_COLOR);
             }
             else if(row < spark_info->uint_array[UINT_START_ROW]){
-                brush = QBrush(QColor(0xFF ,0xFF ,0xFF));
+                brush = QBrush(UNSELECT_COLOR);
             }
             else if(row < spark_info->uint_array[UINT_CURRENT_ROM]){
-                brush = QBrush(QColor(0x00 ,0xFF ,0x00));
+                brush = QBrush(OK_COLOR);
             }
             else if(row <= spark_info->uint_array[UINT_END_ROW]){
-                brush = QBrush(QColor(0xFF ,0x00 ,0x00));
+                brush = QBrush(UNOK_COLOR);
             }
             else{
-                brush = QBrush(QColor(0xFF ,0xFF ,0xFF));
+                brush = QBrush(UNSELECT_COLOR);
             }
             for(column = 0;column < 11;column ++){
                 QStandardItem* item = model->item(row ,column);
@@ -483,13 +483,13 @@ void MainInterface::tableRollUpdate()
         for(row = 0;row < abs(model->rowCount());row++){
             QBrush brush;
             if(row < spark_info->uint_array[UINT_START_ROW]){
-                brush = QBrush(QColor(0xFF ,0xFF ,0xFF));
+                brush = QBrush(UNSELECT_COLOR);
             }
             else if(row <= spark_info->uint_array[UINT_END_ROW]){
-                brush = QBrush(QColor(0xFF ,0x00 ,0x00));
+                brush = QBrush(UNOK_COLOR);
             }
             else{
-                brush = QBrush(QColor(0xFF ,0xFF ,0xFF));
+                brush = QBrush(UNSELECT_COLOR);
             }
             for(column = 0;column < 11;column ++){
                 QStandardItem* item = model->item(row ,column);
@@ -499,6 +499,7 @@ void MainInterface::tableRollUpdate()
     }
 }
 
+/*段选时初始化start_or_end为真，则选择开始行*/
 void MainInterface::tableSelect(bool b)
 {
     start_or_end = b;
@@ -507,6 +508,7 @@ void MainInterface::tableSelect(bool b)
 /*数据发生改变时重新排序*/
 void MainInterface::tableItemChange(QModelIndex tl ,QModelIndex br)
 {
+    qDebug()<<"tableItemChange";
     if(tl.column() == 0){
         model->sort(tl.column() ,Qt::AscendingOrder);
         submitTable();
@@ -535,12 +537,12 @@ void MainInterface::submitTable()
 
         /*根据行的背景颜色判断开始行和结束行*/
         QBrush brush = model->item(i , 0)->background();
-        if(brush.operator == (QBrush(QColor(0xFF ,0x00 ,0x00)))&&first){
+        if(brush.operator == (QBrush(UNOK_COLOR))&&first){
             qDebug()<<"start"<<i;
             min = i;
             first =false;
         }
-        else if(brush.operator == (QBrush(QColor(0xFF ,0x00 ,0x00)))&&!first){
+        else if(brush.operator == (QBrush(UNOK_COLOR))&&!first){
             max = i;
             qDebug()<<"end"<<i;
         }
@@ -560,8 +562,10 @@ void MainInterface::submitTable()
         spark_info->table.Index[i] = i + 1;
     }
 
-    spark_info->setUInt(UINT_START_ROW , min);
-    spark_info->setUInt(UINT_END_ROW , max);
+    if(table_state == TABLE_DELETE ){
+        spark_info->setUInt(UINT_START_ROW , min);
+        spark_info->setUInt(UINT_END_ROW , max);
+    }
 }
 
 void MainInterface::funcbarUpdate(int i)

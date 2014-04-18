@@ -145,7 +145,7 @@ void seconlevel_f4::F5()
         }
         ui->pushButton_F6->setEnabled(false);
         spark_info->setUInt(UINT_JUMP_H , 0);
-        spark_info->setUInt(UINT_JUMP_T , 0);
+        spark_info->setUInt(UINT_JUMP_T , 5);
     }
 }
 
@@ -157,7 +157,7 @@ void seconlevel_f4::F6()
     }
     /*F6次数恢复默认数*/
     else{
-        spark_info->setUInt(UINT_JUMP_T , 0);
+        spark_info->setUInt(UINT_JUMP_T , 5);
     }
 }
 

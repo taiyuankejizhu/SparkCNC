@@ -16,6 +16,7 @@ QcomboxTime::QcomboxTime(QWidget *parent,QString l,bool b) :
 
 void QcomboxTime::initTime()
 {
+
     if(flag){
         time = QTime::currentTime();
         hours = time.hour();

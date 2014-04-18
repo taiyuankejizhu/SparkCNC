@@ -34,6 +34,11 @@
 #define TABLE_SELECT 0x02
 #define TABLE_DELETE 0x03
 
+#define UNOK_COLOR QColor(0xFF ,0x00 ,0x00)
+#define OK_COLOR QColor(0x00 ,0xFF ,0x00)
+#define SELECT_COLOR QColor(0xFF ,0xCC ,0x00)
+#define UNSELECT_COLOR QColor(0xFF ,0xFF ,0xFF)
+
 namespace Ui {
     class MainInterface;
 }

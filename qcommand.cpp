@@ -113,8 +113,8 @@ void QCommand::keyPressEvent(QKeyEvent *k)
         switch(k->key())
         {
         case Qt::Key_0:
-            if(!value.contains(".")&&value.contains("0"))
-                break;
+            //if(!value.contains(".")&&value.contains("0"))
+                //break;
         case Qt::Key_1:
         case Qt::Key_2:
         case Qt::Key_3:

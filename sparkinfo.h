@@ -61,6 +61,12 @@ union EightBytes
     long longs;
 };
 
+union TwelveBytes
+{
+    char bytes[3*sizeof(unsigned int)];
+    unsigned int uints[3];
+};
+
 const Table table_init = {
     {1,5,10,15,20,30,40,50,55,60},
     {0,35*2,6,0,4,0,0,0,0,0},
