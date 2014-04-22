@@ -20,6 +20,10 @@ private:
 signals:
     void enter(int i);
 public slots:
+    void F1();
+    void F2();
+    void F3();
+    void F4();
     void F8();
     void F0();
 };

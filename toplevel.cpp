@@ -68,6 +68,20 @@ void toplevel::F7()
 
 void toplevel::F0()
 {
+    if(spark_info->b_array[B_PUMP])
+        ui->pushButton_F1->setChecked(true);
+    else
+        ui->pushButton_F1->setChecked(false);
+
+    if(spark_info->b_array[B_POWER])
+        ui->pushButton_F2->setChecked(true);
+    else
+        ui->pushButton_F2->setChecked(false);
+
+    if(spark_info->b_array[B_REVERSE])
+        ui->pushButton_F7->setChecked(true);
+    else
+        ui->pushButton_F7->setChecked(false);
 }
 
 toplevel::~toplevel()

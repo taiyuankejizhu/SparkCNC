@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QPushButton>
 #include <QMouseEvent>
+#include <QKeyEvent>
 
 namespace Ui {
     class AutoDialog;

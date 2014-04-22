@@ -190,10 +190,17 @@ void seconlevel_f4::F0()
     ui->pushButton_F2->setChecked(false);
     ui->pushButton_F3->setChecked(false);
     ui->pushButton_F4->setChecked(false);
+
     if(ui->pushButton_F5->isChecked())
         ui->pushButton_F6->setEnabled(true);
     else
         ui->pushButton_F6->setEnabled(false);
+
+    if(spark_info->b_array[B_BOTTOM])
+        ui->pushButton_F7->setChecked(true);
+    else
+        ui->pushButton_F7->setChecked(false);
+
     emit stateChange(TABLE_EDIT);
 }
 

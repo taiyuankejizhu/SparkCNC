@@ -92,9 +92,48 @@ void Qcombox::mouseReleaseEvent(QMouseEvent *ev)
 
 void Qcombox::updateValue()
 {
+
+    QString s;
+
+    int m = 0;
     long tmp = 0;
+    long g = 10000000;
+    char ch = '0';
+    bool dot = false;
+    bool first = false;
+
     tmp = spark_info->l_array[index];
-    value = QString::number(tmp);
+
+    if(tmp < 0)
+        s.append('-');
+
+    for(m = 0;m < 7;m++){
+        if(m == 4){
+            if(!first){
+                s.append('0');
+                s.append('.');
+                first = true;
+            }
+            else
+                s.append('.');
+            dot = true;
+        }
+        tmp = spark_info->l_array[index] % g;
+        g = g / 10;
+        tmp = tmp / g;
+        tmp = abs(tmp);
+        ch = tmp & 0xFF;
+        ch = ch + 48;
+
+        if(ch != '0'){
+            first =true;
+        }
+
+        if(first)
+            s.append(ch);
+    }
+
+    value = s;
     update();
 }
 

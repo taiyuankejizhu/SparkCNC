@@ -2,9 +2,16 @@
 #define QCOMBOXTIME_H
 
 #include "qcombox.h"
+#include "sparkinfo.h"
 #include <QWidget>
 #include <QTimer>
 #include <QTime>
+#include "fm25v02.h"
+#include "setting.h"
+
+#define HOURS 0
+#define MINUTES 1
+#define SECONDS 2
 
 class QcomboxTime :public Qcombox
 {
@@ -18,9 +25,9 @@ private:
     bool flag;
     QTimer *timer ;
     QTime time ;
-    unsigned int hours;
-    unsigned int minutes;
-    unsigned int seconds;
+
+    TwelveBytes current;
+    TwelveBytes target;
 
 signals:
 

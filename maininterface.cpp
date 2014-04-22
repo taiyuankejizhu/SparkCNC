@@ -4,7 +4,6 @@
 #include "qdebug.h"
 
 /*根据Qt编译器的版本判断目标机的类型*/
-
 #if(QT_VERSION == 0x040704)
     #define X86
 #else
@@ -27,13 +26,19 @@ MainInterface::MainInterface(QWidget *parent) :
     initHardware();
 #endif
 
-    XPos_Update();
-    YPos_Update();
-    ZPos_Update();
+    XYZ_Update(L_X_CURRENT);
+    XYZ_Update(L_Y_CURRENT);
+    XYZ_Update(L_Z_CURRENT);
 
-    connect(spark_info ,SIGNAL(longChange()) ,this ,SLOT(XPos_Update()));
-    connect(spark_info ,SIGNAL(longChange()) ,this ,SLOT(YPos_Update()));
-    connect(spark_info ,SIGNAL(longChange()) ,this ,SLOT(ZPos_Update()));
+    XYZ_Update(L_X_ABSOLUTE);
+    XYZ_Update(L_Y_ABSOLUTE);
+    XYZ_Update(L_Z_ABSOLUTE);
+
+    XYZ_Update(L_X_REMAIN);
+    XYZ_Update(L_Y_REMAIN);
+    XYZ_Update(L_Z_REMAIN);
+
+    connect(spark_info ,SIGNAL(xyzChange(int)) ,this ,SLOT(XYZ_Update(int)));
 
     model = new QStandardItemModel;
     /*数据表索引发生改变*/
@@ -48,6 +53,7 @@ MainInterface::MainInterface(QWidget *parent) :
     tableStateUpdate(TABLE_SHOW);
 
     spark = new SparkThread();
+    connect(spark_info ,SIGNAL(startChange()) ,spark ,SLOT(sparkChange()));
 
     mesg = new MesgBox(this);
     mesg ->setHidden(false);
@@ -225,25 +231,20 @@ void MainInterface::keyPressEvent( QKeyEvent *k )
             break;
         /*放电开关，监听‘D’键*/
         case Qt::Key_D:
-            spark_info->reverseBool(4);
-            if(spark_info->b_array[4]&&!spark->isRunning())
-                spark->start();
-            else if(!spark_info->b_array[4]&&spark->isRunning())
-                spark->terminate();
+            spark_info->reverseBool(B_START);
             break;
         /*这里的Enter键用来响应放电数据表的段选和删除行*/
         case Qt::Key_Enter:
-            if(table_state == TABLE_EDIT)
+            if(table_state == TABLE_EDIT){
                 qDebug()<<"1";
+            }
             else if(table_state == TABLE_SELECT){
                 if(start_or_end){
                     spark_info->setUInt(UINT_START_ROW ,ui->tableView->currentIndex().row());
-                    qDebug()<<ui->tableView->currentIndex().row();
                     start_or_end = false;
                 }
                 else{
                     spark_info->setUInt(UINT_END_ROW ,ui->tableView->currentIndex().row());
-                    qDebug()<<ui->tableView->currentIndex().row();
                     start_or_end = true;
                 }
             }
@@ -252,8 +253,9 @@ void MainInterface::keyPressEvent( QKeyEvent *k )
                 model->removeRow(current);
                 submitTable();
             }
-            else
+            else{
                 qDebug()<<"0";
+            }
             break;
         default :
             break;
@@ -583,12 +585,9 @@ void MainInterface::funcbarUpdate(int i)
 
 }
 
-void MainInterface::XPos_Update()
+void MainInterface::XYZ_Update(int i)
 {
     QString s;
-
-    if(spark_info->l_array[L_X_CURRENT] < 0)
-        s.append('-');
 
     int m = 0;
     long tmp = 0;
@@ -596,6 +595,11 @@ void MainInterface::XPos_Update()
     char ch = '0';
     bool dot = false;
     bool first = false;
+
+    tmp = spark_info->l_array[i];
+
+    if(tmp < 0)
+        s.append('-');
 
     for(m = 0;m < 7;m++){
         if(m == 4){
@@ -608,7 +612,7 @@ void MainInterface::XPos_Update()
                 s.append('.');
             dot = true;
         }
-        tmp = spark_info->l_array[L_X_CURRENT] % g;
+        tmp = spark_info->l_array[i] % g;
         g = g / 10;
         tmp = tmp / g;
         tmp = abs(tmp);
@@ -625,118 +629,45 @@ void MainInterface::XPos_Update()
 
 #ifdef ARM
 
-        EightBytes wr_x;
-        wr_x.longs = 0;
-        wr_x.longs = spark_info->l_array[L_X_CURRENT];
-        FM25V02_WRITE(X_AXIS_ADDR , wr_x.bytes, sizeof wr_x);
+        EightBytes wr;
+        wr.longs = 0;
+        wr.longs = spark_info->l_array[i];
+        FM25V02_WRITE(Z_AXIS_ADDR , wr.bytes, sizeof wr);
 
 #endif
 
-    ui->label_cux->setText(s);
-}
-
-void MainInterface::YPos_Update()
-{
-    QString s;
-
-    if(spark_info->l_array[L_Y_CURRENT] < 0)
-        s.append('-');
-
-    int m = 0;
-    long tmp = 0;
-    long g = 10000000;
-    char ch = '0';
-    bool dot = false;
-    bool first = false;
-
-    for(m = 0;m < 7;m++){
-        if(m == 4){
-            if(!first){
-                s.append('0');
-                s.append('.');
-                first = true;
-            }
-            else
-                s.append('.');
-            dot = true;
-        }
-        tmp = spark_info->l_array[L_Y_CURRENT] % g;
-        g = g / 10;
-        tmp = tmp / g;
-        tmp = abs(tmp);
-        ch = tmp & 0xFF;
-        ch = ch + 48;
-
-        if(ch != '0'){
-            first =true;
-        }
-
-        if(first)
-            s.append(ch);
+    switch(i){
+    case L_X_CURRENT:
+        ui->label_cux->setText(s);
+        break;
+    case L_Y_CURRENT:
+        ui->label_cuy->setText(s);
+        break;
+    case L_Z_CURRENT:
+        ui->label_cuz->setText(s);
+        break;
+    case L_X_ABSOLUTE:
+        ui->label_mex->setText(s);
+        break;
+    case L_Y_ABSOLUTE:
+        ui->label_mey->setText(s);
+        break;
+    case L_Z_ABSOLUTE:
+        ui->label_mez->setText(s);
+        break;
+    case L_X_REMAIN:
+        ui->label_rex->setText(s);
+        break;
+    case L_Y_REMAIN:
+        ui->label_rey->setText(s);
+        break;
+    case L_Z_REMAIN:
+        ui->label_rez->setText(s);
+        break;
+    default:
+        break;
     }
 
-#ifdef ARM
-
-        EightBytes wr_y;
-        wr_y.longs = 0;
-        wr_y.longs = spark_info->l_array[L_Y_CURRENT];
-        FM25V02_WRITE(Y_AXIS_ADDR , wr_y.bytes, sizeof wr_y);
-
-#endif
-
-    ui->label_cuy->setText(s);
-}
-
-void MainInterface::ZPos_Update()
-{
-    QString s;
-
-    if(spark_info->l_array[L_Z_CURRENT] < 0)
-        s.append('-');
-
-    int m = 0;
-    long tmp = 0;
-    long g = 10000000;
-    char ch = '0';
-    bool dot = false;
-    bool first = false;
-
-    for(m = 0;m < 7;m++){
-        if(m == 4){
-            if(!first){
-                s.append('0');
-                s.append('.');
-                first = true;
-            }
-            else
-                s.append('.');
-            dot = true;
-        }
-        tmp = spark_info->l_array[L_Z_CURRENT] % g;
-        g = g / 10;
-        tmp = tmp / g;
-        tmp = abs(tmp);
-        ch = tmp & 0xFF;
-        ch = ch + 48;
-
-        if(ch != '0'){
-            first =true;
-        }
-
-        if(first)
-            s.append(ch);
-    }
-
-#ifdef ARM
-
-        EightBytes wr_z;
-        wr_z.longs = 0;
-        wr_z.longs = spark_info->l_array[L_Z_CURRENT];
-        FM25V02_WRITE(Z_AXIS_ADDR , wr_z.bytes, sizeof wr_z);
-
-#endif
-
-    ui->label_cuz->setText(s);
 }
 
 MainInterface::~MainInterface()

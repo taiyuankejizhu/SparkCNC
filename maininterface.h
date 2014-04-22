@@ -85,9 +85,7 @@ public slots:
     void tableRollUpdate();
     void tableItemChange(QModelIndex tl ,QModelIndex br);
     void funcbarUpdate(int);
-    void XPos_Update();
-    void YPos_Update();
-    void ZPos_Update();
+    void XYZ_Update(int);
 };
 
 #endif // MAININTERFACE_H

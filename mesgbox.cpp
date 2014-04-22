@@ -10,12 +10,12 @@ MesgBox::MesgBox(QWidget *parent) :
 
     label_ctime = new QcomboxTime(this ,tr("当前时间") ,true);
     label_ctime->updateTimer();
-    connect(spark_info ,SIGNAL(boolChange()) ,label_ctime ,SLOT(updateTimer()));
+    connect(spark_info ,SIGNAL(startChange()) ,label_ctime ,SLOT(updateTimer()));
     ui->verticalLayout->addWidget(label_ctime);
 
     label_mtime = new QcomboxTime(this ,tr("加工时间") ,false);
     label_mtime->updateTimer();
-    connect(spark_info ,SIGNAL(boolChange()) ,label_mtime ,SLOT(updateTimer()));
+    connect(spark_info ,SIGNAL(startChange()) ,label_mtime ,SLOT(updateTimer()));
     ui->verticalLayout->addWidget(label_mtime);
 
     label_cdeepth = new Qcombox(this ,tr("当前深度") ,L_DEEP_CURRENT);
