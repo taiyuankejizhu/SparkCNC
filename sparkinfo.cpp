@@ -62,6 +62,18 @@ void SparkInfo::updateTable()
     emit tableChange();
 }
 
+void SparkInfo::setBool(unsigned int i,bool b)
+{
+    if(i < B_LENGTH){
+        b_array[i] = b;
+        if(i == B_START|| i == B_TIME){
+            emit startChange();
+        }
+        else
+            emit boolChange();
+    }
+}
+
 void SparkInfo::reverseBool(unsigned int i)
 {
     if(i < B_LENGTH){
@@ -69,7 +81,11 @@ void SparkInfo::reverseBool(unsigned int i)
             b_array[i] = false;
         else
             b_array[i] = true;
-        emit boolChange();
+        if(i == B_START|| i == B_TIME){
+            emit startChange();
+        }
+        else
+            emit boolChange();
     }
 }
 
@@ -77,7 +93,29 @@ void SparkInfo::setLong(unsigned int i,long l)
 {
     if(i < L_LENGTH){
         l_array[i] = l;
-        emit longChange();
+        if(i == L_X_CURRENT||i == L_Y_CURRENT||i == L_Z_CURRENT){
+            if(i == L_Z_CURRENT){
+                setLong(L_DEEP_CURRENT ,l_array[L_Z_CURRENT]);
+            }
+            emit xyzChange(i);
+        }
+        else if(i == L_X_ABSOLUTE||i == L_Y_ABSOLUTE||i == L_Z_ABSOLUTE){
+            emit xyzChange(i);
+        }
+        else if(i == L_X_REMAIN||i == L_Y_REMAIN||i == L_Z_REMAIN){
+            emit xyzChange(i);
+        }
+        else if(i == L_DEEP_CURRENT){
+            setLong(L_Z_REMAIN ,l_array[L_DEEP_TARGET] - l_array[L_DEEP_CURRENT]);
+            emit longChange();
+        }
+        else if(i == L_DEEP_TARGET){
+            setLong(L_Z_REMAIN ,l_array[L_DEEP_TARGET] - l_array[L_DEEP_CURRENT]);
+            emit longChange();
+        }
+        else{
+            emit longChange();
+        }
     }
 }
 
@@ -106,6 +144,7 @@ void SparkInfo::setUInt(unsigned int i, unsigned int u)
         }
         else if(i == UINT_START_ROW){
             uint_array[UINT_END_ROW] = uint_array[UINT_START_ROW];
+            uint_array[UINT_CURRENT_ROM] = uint_array[UINT_START_ROW];
             emit tableRowChange();
         }
         /*保证开始行号小于结束行号*/
@@ -115,6 +154,7 @@ void SparkInfo::setUInt(unsigned int i, unsigned int u)
                 uint_array[UINT_START_ROW] = uint_array[UINT_END_ROW];
                 uint_array[UINT_END_ROW] = tmp;
             }
+            uint_array[UINT_CURRENT_ROM] = uint_array[UINT_START_ROW];
             emit tableRowChange();
         }
         else

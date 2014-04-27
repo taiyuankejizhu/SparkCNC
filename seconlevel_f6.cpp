@@ -9,6 +9,8 @@ seconlevel_f6::seconlevel_f6(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    /*关机和休眠开关打开后，在扫描进程中计时一段时间后执行相应命令*/
+
     connect(ui->pushButton_F1,SIGNAL(clicked()),this ,SLOT(F1()));
     ui->pushButton_F1->setCheckable(true);
 

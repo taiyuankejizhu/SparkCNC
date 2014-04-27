@@ -55,6 +55,9 @@ MainInterface::MainInterface(QWidget *parent) :
     spark = new SparkThread();
     connect(spark_info ,SIGNAL(startChange()) ,spark ,SLOT(sparkChange()));
 
+    scan = new ScanThread();
+    scan->start();
+
     mesg = new MesgBox(this);
     mesg ->setHidden(false);
 
@@ -229,8 +232,12 @@ void MainInterface::keyPressEvent( QKeyEvent *k )
             command ->setTarget(L_SLOT ,L_Z_CURRENT);
 
             break;
-        /*放电开关，监听‘D’键*/
-        case Qt::Key_D:
+        /*放电开关，监听‘F12’键*/
+        case Qt::Key_F12:
+            spark_info->reverseBool(B_START);
+            break;
+        /*放电开关，监听‘F11’键*/
+        case Qt::Key_F11:
             spark_info->reverseBool(B_START);
             break;
         /*这里的Enter键用来响应放电数据表的段选和删除行*/

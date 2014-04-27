@@ -7,9 +7,9 @@
 #define UINT_SLOT 1         /*无符号整型数组的槽标记*/
 #define L_SLOT 2            /*长整型数组的槽标记*/
 
-#define B_LENGTH 10         /*布尔数组的长度*/
+#define B_LENGTH 15         /*布尔数组的长度*/
 #define UINT_LENGTH 10      /*无符号整型数组的长度*/
-#define L_LENGTH 10          /*长整型数组的长度*/
+#define L_LENGTH 20          /*长整型数组的长度*/
 
 #define B_PUMP 0            /*冷却油泵的开关索引*/
 #define B_POWER 1           /*副电源的开关索引*/
@@ -18,6 +18,14 @@
 #define B_START 4           /*放电加工的开关索引*/
 #define B_TIME 5            /*当前时间的开关索引*/
 #define B_BOTTOM 6          /*修底的开关索引*/
+#define B_FIRE 7            /*火警的开关索引*/
+#define B_OIL 8             /*油位报警的开关索引*/
+#define B_DEEPHOLE 9        /*深孔报警的开关索引*/
+#define B_XYLOCK 10         /*XY轴锁定的开关索引*/
+#define B_SLEEP 11          /*屏幕睡眠的开关索引*/
+#define B_SCREEN 12         /*屏幕状态的索引*/
+#define B_SHUTDOWN 13       /*关机的开关索引*/
+#define B_SOUND 14          /*按键声音的开关索引*/
 
 #define UINT_VOLTAGE 0      /*放电电压值的索引*/
 #define UINT_CURRENT 1      /*放电电流值的索引*/
@@ -38,13 +46,22 @@
 #define L_X_OFFSET 5        /*当前X轴辅助位置的索引*/
 #define L_Y_OFFSET 6        /*当前Y轴辅助位置的索引*/
 #define L_Z_OFFSET 7        /*当前Z轴辅助位置的索引*/
+#define L_X_ABSOLUTE 8      /*X轴绝对位置的索引*/
+#define L_Y_ABSOLUTE 9      /*Y轴绝对位置的索引*/
+#define L_Z_ABSOLUTE 10     /*Z轴绝对位置的索引*/
+#define L_X_REMAIN 11       /*X轴剩余位置的索引*/
+#define L_Y_REMAIN 12       /*Y轴剩余位置的索引*/
+#define L_Z_REMAIN 13       /*Z轴剩余位置的索引*/
+#define L_X_COUNTER 14      /*X轴光栅计数值的索引*/
+#define L_Y_COUNTER 15      /*Y轴光栅计数值的索引*/
+#define L_Z_COUNTER 16      /*Z轴光栅计数值的索引*/
 
 struct Table
 {
-    int Shendu[10];             /*深度*/
-    unsigned int Dianliu[10];  /*电流*/
-    unsigned int Maikuan[10];  /*脉宽*/
-    unsigned int Xiuzhi[10];   /*休止*/
+    int           Shendu[10];   /*深度*/
+    unsigned int  Dianliu[10];  /*电流*/
+    unsigned int  Maikuan[10];  /*脉宽*/
+    unsigned int  Xiuzhi[10];   /*休止*/
     unsigned char Jianxi[10];   /*间隙*/
     unsigned char Sudu[10];     /*速度*/
     unsigned char Shenggao[10]; /*升高*/
@@ -85,14 +102,15 @@ const Table table_init = {
 const bool bool_init[] = {
         false ,false ,false ,false ,false ,
         true ,false ,false ,false ,false ,
+        false ,false ,false ,false ,false ,
 };
 
 const unsigned int uint_init[] = {
-        220, 0, 10, 8, 5, 0, 0,0 ,0 ,0 ,
+        220, 0, 10, 8, 5, 0, 0, 0, 0, 0,
 };
 
 const long long_init[] = {
-        10, 0, -7777500, -7777500, -7777500, 0, 0, 0, 0, 0,
+        0, 1, -7777500, -7777500, -7777500, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 };
 
 class SparkInfo : public QObject
@@ -110,14 +128,18 @@ private:
     void tableInit();
 
 signals:
+    /*放电开关信号*/
+    void startChange();
     void boolChange();
     void longChange();
+    void xyzChange(int);
     void uintChange();
     void tableChange();
     void tableIndexChange();
     void tableRowChange();
 
 public slots:
+    void setBool(unsigned int ,bool);
     void reverseBool(unsigned int);
     void setLong(unsigned int ,long);
     void setUInt(unsigned int , unsigned int);

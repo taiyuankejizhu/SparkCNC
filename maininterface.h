@@ -10,6 +10,7 @@
 #include "keyboard.h"
 #include "qcommand.h"
 #include "sparkthread.h"
+#include "scanthread.h"
 #include <QWidget>
 #include <QStandardItemModel>
 #include <QStandardItem>
@@ -60,6 +61,8 @@ public:
     QCommand *command;
     /*放电加工线程*/
     SparkThread *spark;
+    /*数据扫描和运行时线程*/
+    ScanThread *scan;
     ~MainInterface();
 
 private:

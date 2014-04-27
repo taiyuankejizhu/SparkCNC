@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     groupdialog.cpp \
     coordialog.cpp \
     autodialog.cpp \
-    qparameter.cpp
+    qparameter.cpp \
+    scanthread.cpp
 
 HEADERS  += \
     qcheck.h \
@@ -54,7 +55,8 @@ HEADERS  += \
     groupdialog.h \
     coordialog.h \
     autodialog.h \
-    qparameter.h
+    qparameter.h \
+    scanthread.h
 
 FORMS    += \
     seconlevel_f3.ui \
