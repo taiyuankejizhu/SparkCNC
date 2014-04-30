@@ -26,8 +26,8 @@ private:
     QTimer *timer ;
     QTime time ;
 
-    TwelveBytes current;
-    TwelveBytes target;
+    SixBytes current;
+    SixBytes target;
 
 signals:
 

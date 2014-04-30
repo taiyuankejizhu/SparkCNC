@@ -90,6 +90,9 @@ void MainInterface::initHardware()
     FM25V02_Init();
     printf("FM25V02_Init()!\n");
 
+    GPMI_Init();
+    printf("GPMI_Init()!\n");
+
     EightBytes  rd_x;
     EightBytes  rd_y;
     EightBytes  rd_z;
@@ -231,6 +234,16 @@ void MainInterface::keyPressEvent( QKeyEvent *k )
             command ->setType(false ,true ,0x04 ,true ,0x03);
             command ->setTarget(L_SLOT ,L_Z_CURRENT);
 
+            break;
+        case Qt::Key_F9:
+#ifdef ARM
+            GPMI_Info();
+#endif
+            break;
+        case Qt::Key_F10:
+#ifdef ARM
+            GPMI_Info();
+#endif
             break;
         /*放电开关，监听‘F12’键*/
         case Qt::Key_F12:

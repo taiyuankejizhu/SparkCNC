@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     coordialog.cpp \
     autodialog.cpp \
     qparameter.cpp \
-    scanthread.cpp
+    scanthread.cpp \
+    gpmi.c
 
 HEADERS  += \
     qcheck.h \
@@ -56,7 +57,8 @@ HEADERS  += \
     coordialog.h \
     autodialog.h \
     qparameter.h \
-    scanthread.h
+    scanthread.h \
+    gpmi.h
 
 FORMS    += \
     seconlevel_f3.ui \

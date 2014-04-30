@@ -3,7 +3,7 @@
 
 #define VERSION "V1.0"
 
-#define DATA_FILE "/dev/fpga"
+#define DATA_FILE "/dev/mtd0"
 #define BEEP_FILE "/dev/beep"
 #define SPI_FILE  "/dev/spidev1.0"
 

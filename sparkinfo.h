@@ -78,10 +78,10 @@ union EightBytes
     long longs;
 };
 
-union TwelveBytes
+union SixBytes
 {
-    char bytes[3*sizeof(unsigned int)];
-    unsigned int uints[3];
+    char bytes[3*sizeof(unsigned short)];
+    unsigned short ushorts[3];
 };
 
 const Table table_init = {

@@ -28,14 +28,14 @@ void QcomboxTime::initTime()
 {
     if(flag){
         time = QTime::currentTime();
-        current.uints[HOURS] = time.hour();
-        current.uints[MINUTES] = time.minute();
-        current.uints[SECONDS] = time.second();
+        current.ushorts[HOURS] = (unsigned short)time.hour();
+        current.ushorts[MINUTES] = (unsigned short)time.minute();
+        current.ushorts[SECONDS] = (unsigned short)time.second();
     }
     else{
-        current.uints[HOURS] = 0;
-        current.uints[MINUTES] = 0;
-        current.uints[SECONDS] = 0;
+        current.ushorts[HOURS] = 0;
+        current.ushorts[MINUTES] = 0;
+        current.ushorts[SECONDS] = 0;
 #ifdef ARM
         FM25V02_READ(CURRENT_TIME , current.bytes ,sizeof current);
         FM25V02_READ(TARGET_TIME , target.bytes ,sizeof target);
@@ -47,18 +47,18 @@ void QcomboxTime::valueUpdate()
 {
     if(flag){
         time = QTime::currentTime();
-        current.uints[HOURS] = time.hour();
-        current.uints[MINUTES] = time.minute();
-        current.uints[SECONDS] = time.second();
+        current.ushorts[HOURS] = (unsigned short)time.hour();
+        current.ushorts[MINUTES] = (unsigned short)time.minute();
+        current.ushorts[SECONDS] = (unsigned short)time.second();
     }
     else{
-        if(++current.uints[SECONDS] > 60){
-            current.uints[SECONDS] = 0;
-            if(++current.uints[MINUTES] > 60){
-                current.uints[MINUTES] = 0;
-                current.uints[HOURS]++;
+        if(++current.ushorts[SECONDS] > 60){
+            current.ushorts[SECONDS] = 0;
+            if(++current.ushorts[MINUTES] > 60){
+                current.ushorts[MINUTES] = 0;
+                current.ushorts[HOURS]++;
                 /*放电时间溢出*/
-                if(current.uints[HOURS] > target.uints[HOURS]){
+                if(current.ushorts[HOURS] > target.ushorts[HOURS]){
                     spark_info->reverseBool(B_START);
                 }
             }
@@ -74,25 +74,25 @@ void QcomboxTime::valueUpdate()
 void QcomboxTime::timeToString()
 {
     QString str,tmp;
-    tmp.setNum(current.uints[HOURS]);
-    if(current.uints[HOURS] < 10){
+    tmp.setNum(current.ushorts[HOURS]);
+    if(current.ushorts[HOURS] < 10){
         if(flag)
             str = '0';
     }
-    else if(current.uints[HOURS] < 100&&current.uints[HOURS] >= 10){
+    else if(current.ushorts[HOURS] < 100&&current.ushorts[HOURS] >= 10){
     }
     str += tmp;
     str += ':';
 
-    tmp.setNum(current.uints[MINUTES]);
-    if(current.uints[MINUTES] < 10){
+    tmp.setNum(current.ushorts[MINUTES]);
+    if(current.ushorts[MINUTES] < 10){
         str += '0';
     }
     str += tmp;
     str += ':';
 
-    tmp.setNum(current.uints[SECONDS]);
-    if(current.uints[SECONDS] < 10){
+    tmp.setNum(current.ushorts[SECONDS]);
+    if(current.ushorts[SECONDS] < 10){
         str += '0';
     }
     str += tmp;

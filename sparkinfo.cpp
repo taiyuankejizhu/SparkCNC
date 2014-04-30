@@ -11,6 +11,7 @@ SparkInfo::SparkInfo(QObject *parent) :
 
     /*当前表的索引改变时，更新表的数据*/
     connect(this ,SIGNAL(tableIndexChange()) ,this ,SLOT(updateTable()));
+
 }
 
 void SparkInfo::tableInit()

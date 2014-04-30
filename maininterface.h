@@ -25,6 +25,7 @@
 #include "fcntl.h"
 #include "sys/ioctl.h"
 #include "fm25v02.h"
+#include "gpmi.h"
 #include "setting.h"
 
 #define TABLE_ROWS 10

@@ -17,13 +17,11 @@ void ScanThread::run()
         if(a_cycle == A_CYCLE){
             /*to do*/
             a_cycle = 0;
-            qDebug()<<"a mark!";
         }
 
         if(b_cycle == B_CYCLE){
             /*to do*/
             b_cycle = 0;
-            qDebug()<<"b mark!";
         }
 
         if(spark_info->b_array[B_SHUTDOWN])
