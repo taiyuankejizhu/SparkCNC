@@ -10,14 +10,6 @@
 /*存储数据接口的文件描述符*/
 static int gpmi_fd;
 
-#define PAGE_1 0
-
-#define X_OFFSET 0x00
-#define Y_OFFSET 0x40
-#define Z_OFFSET 0x80
-#define IO_OFFSET 0xC0
-#define OS_OFFSET 0xE0
-
 /*
 ********************************************************************************************************
 ** Function name:		GPMI_Init
@@ -55,6 +47,9 @@ uint8 GPMI_Init(void)
 void GPMI_Info(void)
 {
     struct mtd_info_user info;
+
+    if(gpmi_fd < 0)
+        return;
 
     if(ioctl(gpmi_fd, MEMGETINFO, &info)){
         printf("Can't get the info data!\n");
@@ -188,7 +183,8 @@ uint32 GPMI_Write(uint32 addr ,uint8 *pBuf ,uint32 num)
         e_info.start = PAGE_1;
         e_info.length = info.erasesize;
 
-        /*erase the page_1*/
+        /*erase the page_1,if the device is not a nand flash device ,
+        this step should be ignore*/
         if (ioctl(gpmi_fd,MEMERASE,&e_info) < 0) {
             printf("Erasing page_1 failed!\n");
             return 0;

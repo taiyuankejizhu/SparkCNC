@@ -9,6 +9,7 @@ AutoDialog::AutoDialog(QWidget *parent) :
     ui->setupUi(this);
     this->setGeometry(0 ,320 ,670 ,220);
     this->setWindowFlags(Qt::FramelessWindowHint);
+
     ui->buttonBox->button(ui->buttonBox->Ok)->setText(tr("确定(O)"));
     ui->buttonBox->button(ui->buttonBox->Cancel)->setText(tr("取消(C)"));
 }

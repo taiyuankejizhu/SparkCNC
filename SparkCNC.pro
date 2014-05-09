@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     autodialog.cpp \
     qparameter.cpp \
     scanthread.cpp \
-    gpmi.c
+    gpmi.c \
+    jumpdialog.cpp
 
 HEADERS  += \
     qcheck.h \
@@ -58,7 +59,8 @@ HEADERS  += \
     autodialog.h \
     qparameter.h \
     scanthread.h \
-    gpmi.h
+    gpmi.h \
+    jumpdialog.h
 
 FORMS    += \
     seconlevel_f3.ui \
@@ -73,7 +75,8 @@ FORMS    += \
     mesgbox.ui \
     groupdialog.ui \
     coordialog.ui \
-    autodialog.ui
+    autodialog.ui \
+    jumpdialog.ui
 
 RESOURCES += \
     resource.qrc

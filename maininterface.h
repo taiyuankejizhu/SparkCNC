@@ -35,6 +35,7 @@
 #define TABLE_EDIT 0x01
 #define TABLE_SELECT 0x02
 #define TABLE_DELETE 0x03
+#define TABLE_ADD   0x04
 
 #define UNOK_COLOR QColor(0xFF ,0x00 ,0x00)
 #define OK_COLOR QColor(0x00 ,0xFF ,0x00)
@@ -55,7 +56,7 @@ public:
     void initHardware();
     void submitTable();
     QStandardItemModel *model;
-    /*标志数据表格的状态，0x00显示态，0x01数据编辑态，0x02段选态,0x03行删除态*/
+    /*标志数据表格的状态，0x00显示态，0x01数据编辑态，0x02段选态,0x03行删除态,0x04行增加态*/
     char table_state;
     KeyBoard *keyboard;
     MesgBox *mesg;
@@ -84,6 +85,7 @@ public slots:
     void commandFinish();
     void commandSwitch(char ,char ,char ,char);
     void tableSelect(bool);
+    void tableAddRow(int);
     void tableStateUpdate(char);
     void tableDataUpdate();
     void tableRollUpdate();

@@ -7,6 +7,14 @@ typedef unsigned short uint16;
 
 typedef unsigned int uint32;
 
+#define PAGE_1 0
+
+#define X_OFFSET 0x00
+#define Y_OFFSET 0x40
+#define Z_OFFSET 0x80
+#define IO_OFFSET 0xC0
+#define OS_OFFSET 0xE0
+
 /*
 ********************************************************************************************************
 ** Function name:		GPMI_Init

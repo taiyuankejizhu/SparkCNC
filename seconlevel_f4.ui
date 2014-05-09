@@ -562,7 +562,7 @@
        <enum>Qt::NoFocus</enum>
       </property>
       <property name="text">
-       <string>高度</string>
+       <string>增加行</string>
       </property>
      </widget>
     </item>
@@ -584,7 +584,7 @@
        <enum>Qt::NoFocus</enum>
       </property>
       <property name="text">
-       <string>次数</string>
+       <string>跳高</string>
       </property>
      </widget>
     </item>

@@ -269,9 +269,24 @@ void MainInterface::keyPressEvent( QKeyEvent *k )
                 }
             }
             else if(table_state == TABLE_DELETE){
-                current = ui->tableView->currentIndex().row();
-                model->removeRow(current);
-                submitTable();
+                if(model->rowCount() > 0){
+                    current = ui->tableView->currentIndex().row();
+                    model->removeRow(current);
+                    submitTable();
+                }
+                else{
+                    qDebug()<<"Null"<<endl;
+                }
+            }
+            else if (table_state == TABLE_ADD) {
+                if(model->rowCount() < 10){
+                    current = ui->tableView->currentIndex().row();
+                    tableAddRow(current);
+                    submitTable();
+                }
+                else{
+                    qDebug()<<"Full"<<endl;
+                }
             }
             else{
                 qDebug()<<"0";
@@ -334,6 +349,62 @@ void MainInterface::commandSwitch(char status ,char type ,char slot,char index)
     command ->setStatus(status);
     command ->setType(type);
     command ->setTarget(slot ,index);
+}
+
+/*插入行*/
+void MainInterface::tableAddRow(int i)
+{
+    i = model->rowCount() - 1;
+    QStandardItem* item1 = new QStandardItem();
+    item1->setTextAlignment(Qt::AlignCenter);
+    item1->setData(spark_info->table.Shendu[i] ,Qt::EditRole);
+    QStandardItem* item2 = new QStandardItem(QString::number(spark_info->table.Dianliu[i]));
+    item2->setTextAlignment(Qt::AlignCenter);
+    QStandardItem* item3 = new QStandardItem(QString::number(spark_info->table.Maikuan[i]));
+    item3->setTextAlignment(Qt::AlignCenter);
+    QStandardItem* item4 = new QStandardItem(QString::number(spark_info->table.Xiuzhi[i]));
+    item4->setTextAlignment(Qt::AlignCenter);
+    QStandardItem* item5 = new QStandardItem(QString::number(spark_info->table.Jianxi[i]));
+    item5->setTextAlignment(Qt::AlignCenter);
+    QStandardItem* item6 = new QStandardItem(QString::number(spark_info->table.Sudu[i]));
+    item6->setTextAlignment(Qt::AlignCenter);
+    QStandardItem* item7 = new QStandardItem(QString::number(spark_info->table.Shenggao[i]));
+    item7->setTextAlignment(Qt::AlignCenter);
+    QStandardItem* item8 = new QStandardItem(QString::number(spark_info->table.Gongshi[i]));
+    item8->setTextAlignment(Qt::AlignCenter);
+    QStandardItem* item9 = new QStandardItem(QString::number(spark_info->table.Mianji[i]));
+    item9->setTextAlignment(Qt::AlignCenter);
+    QStandardItem* item10 = new QStandardItem(QString::number(spark_info->table.Jixin[i]));
+    item10->setTextAlignment(Qt::AlignCenter);
+    QStandardItem* item11 = new QStandardItem(QString::number(spark_info->table.Gaoya[i]));
+    item11->setTextAlignment(Qt::AlignCenter);
+    QList<QStandardItem*> item;
+    item <<item1<<item2<<item3<<item4<<item5<<item6<<item7<<item8<<item9<<item10<<item11;
+    model->appendRow(item);
+
+    int width = 54;
+    ui->tableView->setColumnWidth(0,width+width);
+    ui->tableView->setColumnWidth(1,width);
+    ui->tableView->setColumnWidth(2,width);
+    ui->tableView->setColumnWidth(3,width);
+    ui->tableView->setColumnWidth(4,width);
+    ui->tableView->setColumnWidth(5,width);
+    ui->tableView->setColumnWidth(6,width);
+    ui->tableView->setColumnWidth(7,width);
+    ui->tableView->setColumnWidth(8,width);
+    ui->tableView->setColumnWidth(9,width);
+    ui->tableView->setColumnWidth(10,width);
+
+    for(int i=0 ;i < TABLE_ROWS;i++)
+        ui->tableView->setRowHeight(i ,20);
+
+    ui->tableView->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
+    ui->tableView->horizontalHeader()->setFixedHeight(17);
+    //ui->tableView->setEnabled(false);
+
+    ui->tableView->verticalHeader()->setResizeMode(QHeaderView::Fixed);
+    ui->tableView->verticalHeader()->setFixedWidth(20);
+
 }
 
 void MainInterface::tableStateUpdate(char c)
@@ -410,6 +481,27 @@ void MainInterface::tableStateUpdate(char c)
         ui->tableView->selectRow(0);
         ui->tableView->setFocus();
 
+        tableRollUpdate();
+    }
+    else if(table_state == TABLE_ADD){
+        disconnect(model,0,this ,0);
+
+        ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
+        ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+        ui->tableView->setFocusPolicy(Qt::StrongFocus);
+        ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
+        ui->tableView->selectRow(0);
+        ui->tableView->setFocus();
+
+        tableRollUpdate();
+    }
+    else{
+        disconnect(model,0,this ,0);
+
+        ui->tableView->setSelectionMode(QAbstractItemView::NoSelection);
+        ui->tableView->setFocusPolicy(Qt::NoFocus);
+        ui->tableView->setEditTriggers(QTableView::NoEditTriggers);
+        setFocus();
         tableRollUpdate();
     }
 }
@@ -501,7 +593,7 @@ void MainInterface::tableRollUpdate()
             }
         }
     }
-    else if(table_state == TABLE_SELECT||table_state == TABLE_DELETE||table_state == TABLE_EDIT){
+    else if(table_state == TABLE_SELECT||table_state == TABLE_DELETE||table_state == TABLE_EDIT||table_state == TABLE_ADD){
         for(row = 0;row < abs(model->rowCount());row++){
             QBrush brush;
             if(row < spark_info->uint_array[UINT_START_ROW]){
@@ -546,7 +638,7 @@ void MainInterface::submitTable()
 {
     int i = 0, j = 0;
     int min = 0,max = 0;
-    bool *ok = false;
+    bool ok = false;
     bool first = true;
 
     /*清空数据表，当数据表中的Index字段为0时，该行即为空行*/
@@ -569,17 +661,17 @@ void MainInterface::submitTable()
             qDebug()<<"end"<<i;
         }
 
-        spark_info->table.Shendu[i] = model->item(i,j++)->text().toInt(ok ,10);
-        spark_info->table.Dianliu[i] = model->item(i,j++)->text().toUInt(ok ,10);
-        spark_info->table.Maikuan[i] = model->item(i,j++)->text().toUInt(ok ,10);
-        spark_info->table.Xiuzhi[i] = model->item(i,j++)->text().toUInt(ok ,10);
-        spark_info->table.Jianxi[i] = model->item(i,j++)->text().toUInt(ok ,10);
-        spark_info->table.Sudu[i] = model->item(i,j++)->text().toUInt(ok ,10);
-        spark_info->table.Shenggao[i] = model->item(i,j++)->text().toUInt(ok ,10);
-        spark_info->table.Gongshi[i] = model->item(i,j++)->text().toUInt(ok ,10);
-        spark_info->table.Mianji[i] = model->item(i,j++)->text().toUInt(ok ,10);
-        spark_info->table.Jixin[i] = model->item(i,j++)->text().toUInt(ok ,10);
-        spark_info->table.Gaoya[i] = model->item(i,j++)->text().toUInt(ok ,10);
+        spark_info->table.Shendu[i] = model->item(i,j++)->text().toInt(&ok ,10);
+        spark_info->table.Dianliu[i] = model->item(i,j++)->text().toUInt(&ok ,10);
+        spark_info->table.Maikuan[i] = model->item(i,j++)->text().toUInt(&ok ,10);
+        spark_info->table.Xiuzhi[i] = model->item(i,j++)->text().toUInt(&ok ,10);
+        spark_info->table.Jianxi[i] = model->item(i,j++)->text().toUInt(&ok ,10);
+        spark_info->table.Sudu[i] = model->item(i,j++)->text().toUInt(&ok ,10);
+        spark_info->table.Shenggao[i] = model->item(i,j++)->text().toUInt(&ok ,10);
+        spark_info->table.Gongshi[i] = model->item(i,j++)->text().toUInt(&ok ,10);
+        spark_info->table.Mianji[i] = model->item(i,j++)->text().toUInt(&ok ,10);
+        spark_info->table.Jixin[i] = model->item(i,j++)->text().toUInt(&ok ,10);
+        spark_info->table.Gaoya[i] = model->item(i,j++)->text().toUInt(&ok ,10);
         /*Index字段不为0*/
         spark_info->table.Index[i] = i + 1;
     }

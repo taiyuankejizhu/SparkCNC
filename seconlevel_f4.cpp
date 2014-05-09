@@ -18,6 +18,10 @@ seconlevel_f4::seconlevel_f4(QWidget *parent) :
     autotab->hide();
     connect(autotab ,SIGNAL(finished(int)) ,this ,SLOT(f2_Done(int)));
 
+    jump = new JumpDialog(parent);
+    jump->hide();
+    connect(jump ,SIGNAL(finished(int)) ,this ,SLOT(f6_Done(int)));
+
     connect(ui->pushButton_F1,SIGNAL(clicked()),this ,SLOT(F1()));
     ui->pushButton_F1->setCheckable(true);
 
@@ -42,8 +46,6 @@ seconlevel_f4::seconlevel_f4(QWidget *parent) :
     connect(this ,SIGNAL(enter(int)),parent ,SLOT(funcbarUpdate(int)));
     connect(ui->pushButton_F8,SIGNAL(clicked()),this ,SLOT(F8()));
 
-    /*跳高输入调用命令行*/
-    connect(this ,SIGNAL(inputCommand(char,char,char,char)) ,parent ,SLOT(commandSwitch(char,char,char,char)));
     /*数据表模式改变信号*/
     connect(this ,SIGNAL(stateChange(char)) ,parent ,SLOT(tableStateUpdate(char)));
     /*段选信号*/
@@ -92,6 +94,9 @@ void seconlevel_f4::F2()
 
     if(ui->pushButton_F4->isChecked())
         ui->pushButton_F4->click();
+
+    if(ui->pushButton_F5->isChecked())
+        ui->pushButton_F5->click();
 }
 
 void seconlevel_f4::F3()
@@ -112,6 +117,9 @@ void seconlevel_f4::F3()
 
     if(ui->pushButton_F4->isChecked())
         ui->pushButton_F4->click();
+
+    if(ui->pushButton_F5->isChecked())
+        ui->pushButton_F5->click();
 }
 
 void seconlevel_f4::F4()
@@ -129,35 +137,39 @@ void seconlevel_f4::F4()
 
     if(ui->pushButton_F3->isChecked())
         ui->pushButton_F3->click();
+
+    if(ui->pushButton_F5->isChecked())
+        ui->pushButton_F5->click();
 }
 
 void seconlevel_f4::F5()
 {
-    /*F5按下时跳高有效*/
-    if(ui->pushButton_F5->isChecked()){
-        ui->pushButton_F6->setEnabled(true);
-        emit inputCommand(0x10 ,0x10 ,UINT_SLOT ,UINT_JUMP_H);
-    }
-    /*F5弹起时跳高无效*/
-    else{
-        if(ui->pushButton_F6->isChecked()){
-            ui->pushButton_F6->click();
-        }
-        ui->pushButton_F6->setEnabled(false);
-        spark_info->setUInt(UINT_JUMP_H , 0);
-        spark_info->setUInt(UINT_JUMP_T , 5);
-    }
+    if(ui->pushButton_F5->isChecked())
+        emit stateChange(TABLE_ADD);
+    else
+        emit stateChange(TABLE_EDIT);
+
+    if(ui->pushButton_F1->isChecked())
+        ui->pushButton_F1->click();
+
+    if(ui->pushButton_F2->isChecked())
+        ui->pushButton_F2->click();
+
+    if(ui->pushButton_F3->isChecked())
+        ui->pushButton_F3->click();
+
+    if(ui->pushButton_F4->isChecked())
+        ui->pushButton_F4->click();
 }
 
 void seconlevel_f4::F6()
 {
-    /*F6下时设置次数有效*/
     if(ui->pushButton_F6->isChecked()){
-        emit inputCommand(0x10 ,0x10 ,UINT_SLOT ,UINT_JUMP_T);
+        jump->show();
+        jump->setFocus();
     }
-    /*F6次数恢复默认数*/
     else{
-        spark_info->setUInt(UINT_JUMP_T , 5);
+        jump->hide();
     }
 }
 
@@ -190,11 +202,8 @@ void seconlevel_f4::F0()
     ui->pushButton_F2->setChecked(false);
     ui->pushButton_F3->setChecked(false);
     ui->pushButton_F4->setChecked(false);
-
-    if(ui->pushButton_F5->isChecked())
-        ui->pushButton_F6->setEnabled(true);
-    else
-        ui->pushButton_F6->setEnabled(false);
+    ui->pushButton_F5->setChecked(false);
+    ui->pushButton_F6->setChecked(false);
 
     if(spark_info->b_array[B_BOTTOM])
         ui->pushButton_F7->setChecked(true);
@@ -226,6 +235,30 @@ void seconlevel_f4::f2_Done(int r)
     emit stateChange(TABLE_EDIT);
     if(ui->pushButton_F2->isChecked())
         ui->pushButton_F2->click();
+}
+
+void seconlevel_f4::f6_Done(int r)
+{
+    if(r == 0){
+        qDebug()<<"F6 Cancel!";
+        spark_info->setUInt(UINT_JUMP_H ,jump->height);
+        spark_info->setUInt(UINT_JUMP_T ,jump->count);
+    }
+    else{
+        qDebug()<<"F6 OK!";
+        if(jump->check){
+            spark_info->setUInt(UINT_JUMP_H ,jump->height);
+            spark_info->setUInt(UINT_JUMP_T ,jump->count);
+        }
+        else{
+            spark_info->setUInt(UINT_JUMP_H ,0);
+            spark_info->setUInt(UINT_JUMP_T ,5);
+        }
+    }
+    parentWidget()->setFocus();
+    emit stateChange(TABLE_EDIT);
+    if(ui->pushButton_F6->isChecked())
+        ui->pushButton_F6->click();
 }
 
 seconlevel_f4::~seconlevel_f4()

@@ -3,6 +3,7 @@
 
 #include "groupdialog.h"
 #include "autodialog.h"
+#include "jumpdialog.h"
 #include <QWidget>
 #include <QMenu>
 
@@ -18,6 +19,7 @@ public:
     explicit seconlevel_f4(QWidget *parent = 0);
     GroupDialog *group;
     AutoDialog *autotab;
+    JumpDialog *jump;
     ~seconlevel_f4();
 
 private:
@@ -27,7 +29,6 @@ signals:
     void enter(int i);
     void stateChange(char);
     void selectRows(bool);
-    void inputCommand(char ,char ,char ,char);
 public slots:
     void F1();
     void F2();
@@ -40,6 +41,7 @@ public slots:
     void F0();
     void f1_Done(int);
     void f2_Done(int);
+    void f6_Done(int);
 };
 
 #endif // SECONLEVEL_F4_H
