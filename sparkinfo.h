@@ -72,16 +72,28 @@ struct Table
     unsigned char Index[10];    /*索引*/
 };
 
-union EightBytes
+union TwoBytes
 {
-    char bytes[sizeof(long)];
-    long longs;
+    char bytes[sizeof(unsigned short)];
+    unsigned short ushort;
+};
+
+union FourBytes
+{
+    char bytes[sizeof(unsigned int)];
+    unsigned int uint;
 };
 
 union SixBytes
 {
     char bytes[3*sizeof(unsigned short)];
     unsigned short ushorts[3];
+};
+
+union EightBytes
+{
+    char bytes[sizeof(long)];
+    long longs;
 };
 
 const Table table_init = {
@@ -119,6 +131,7 @@ class SparkInfo : public QObject
 public:
     explicit SparkInfo(QObject *parent = 0);
     void tableClear();
+    void tableAuto(long ,unsigned int ,unsigned int ,unsigned int);
     bool b_array[B_LENGTH];
     unsigned int uint_array[UINT_LENGTH];
     long l_array[L_LENGTH];

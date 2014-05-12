@@ -1,5 +1,6 @@
 #include "scanthread.h"
 #include "sparkinfo.h"
+#include "fpga.h"
 #include "qdebug.h"
 
 ScanThread::ScanThread(QObject *parent) :
@@ -11,6 +12,8 @@ ScanThread::ScanThread(QObject *parent) :
 
 void ScanThread::run()
 {
+    TwoBytes two;
+    memset(two.bytes , 0 ,sizeof two);
 
     while(1){
 
@@ -29,7 +32,16 @@ void ScanThread::run()
         if(spark_info->b_array[B_SLEEP])
             b_cycle++;
 
-        msleep(200);
+        if(spark_info->b_array[B_PUMP]){
+            memset(two.bytes , 0xff ,sizeof two);
+            FPGA_Write(DATA_OFFSET,two.bytes,1);
+        }
+        else{
+            memset(two.bytes , 0x00 ,sizeof two);
+            FPGA_Write(DATA_OFFSET,two.bytes,1);
+        }
+
+        msleep(10);
     }
 
     /*to do something*/

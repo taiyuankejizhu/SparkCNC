@@ -3,7 +3,8 @@
 
 #define VERSION "V1.0"
 
-#define DATA_FILE "/dev/mtd0"
+#define ISA_FILE "/dev/port"
+#define GPMI_FILE "/dev/mtd0"
 #define BEEP_FILE "/dev/beep"
 #define SPI_FILE  "/dev/spidev1.0"
 

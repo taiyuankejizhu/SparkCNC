@@ -64,15 +64,20 @@ void seconlevel_f4::F1()
         group->hide();
     }
 
-    if(ui->pushButton_F2->isChecked())
-        ui->pushButton_F2->click();
-
-
     if(ui->pushButton_F3->isChecked())
         ui->pushButton_F3->click();
 
+    if(ui->pushButton_F2->isChecked())
+        ui->pushButton_F2->click();
+
+    if(ui->pushButton_F5->isChecked())
+        ui->pushButton_F5->click();
+
     if(ui->pushButton_F4->isChecked())
         ui->pushButton_F4->click();
+
+    if(ui->pushButton_F6->isChecked())
+        ui->pushButton_F6->click();
 }
 
 void seconlevel_f4::F2()
@@ -92,11 +97,14 @@ void seconlevel_f4::F2()
     if(ui->pushButton_F3->isChecked())
         ui->pushButton_F3->click();
 
+    if(ui->pushButton_F5->isChecked())
+        ui->pushButton_F5->click();
+
     if(ui->pushButton_F4->isChecked())
         ui->pushButton_F4->click();
 
-    if(ui->pushButton_F5->isChecked())
-        ui->pushButton_F5->click();
+    if(ui->pushButton_F6->isChecked())
+        ui->pushButton_F6->click();
 }
 
 void seconlevel_f4::F3()
@@ -115,11 +123,14 @@ void seconlevel_f4::F3()
     if(ui->pushButton_F2->isChecked())
         ui->pushButton_F2->click();
 
+    if(ui->pushButton_F5->isChecked())
+        ui->pushButton_F5->click();
+
     if(ui->pushButton_F4->isChecked())
         ui->pushButton_F4->click();
 
-    if(ui->pushButton_F5->isChecked())
-        ui->pushButton_F5->click();
+    if(ui->pushButton_F6->isChecked())
+        ui->pushButton_F6->click();
 }
 
 void seconlevel_f4::F4()
@@ -140,6 +151,9 @@ void seconlevel_f4::F4()
 
     if(ui->pushButton_F5->isChecked())
         ui->pushButton_F5->click();
+
+    if(ui->pushButton_F6->isChecked())
+        ui->pushButton_F6->click();
 }
 
 void seconlevel_f4::F5()
@@ -160,6 +174,9 @@ void seconlevel_f4::F5()
 
     if(ui->pushButton_F4->isChecked())
         ui->pushButton_F4->click();
+
+    if(ui->pushButton_F6->isChecked())
+        ui->pushButton_F6->click();
 }
 
 void seconlevel_f4::F6()
@@ -171,6 +188,21 @@ void seconlevel_f4::F6()
     else{
         jump->hide();
     }
+
+    if(ui->pushButton_F1->isChecked())
+        ui->pushButton_F1->click();
+
+    if(ui->pushButton_F2->isChecked())
+        ui->pushButton_F2->click();
+
+    if(ui->pushButton_F5->isChecked())
+        ui->pushButton_F5->click();
+
+    if(ui->pushButton_F4->isChecked())
+        ui->pushButton_F4->click();
+
+    if(ui->pushButton_F3->isChecked())
+        ui->pushButton_F3->click();
 }
 
 void seconlevel_f4::F7()
@@ -227,10 +259,13 @@ void seconlevel_f4::f1_Done(int r)
 
 void seconlevel_f4::f2_Done(int r)
 {
-    if(r == 0)
+    if(r == 0){
         qDebug()<<"F2 Cancel!";
-    else
+    }
+    else{
         qDebug()<<"F2 OK!";
+        spark_info->tableAuto(autotab->deep ,autotab->current,autotab->area,autotab->effect);
+    }
     parentWidget()->setFocus();
     emit stateChange(TABLE_EDIT);
     if(ui->pushButton_F2->isChecked())

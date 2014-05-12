@@ -38,6 +38,27 @@ void SparkInfo::tableInit()
         updateTable();
 }
 
+/*自动生成表格*/
+void SparkInfo::tableAuto(long deep ,unsigned int current,unsigned int area,unsigned int effect)
+{
+    tableClear();
+    unsigned int i = 0;
+    for(i = 0;i < effect;i++){
+        table.Shendu[i] = deep-(effect-1-i)*100;
+        table.Dianliu[i] = current;
+        table.Maikuan[i] = 0;
+        table.Xiuzhi[i] = 0;
+        table.Jianxi[i] = 0;
+        table.Sudu[i] = 0;
+        table.Shenggao[i] = 0;
+        table.Gongshi[i] = 0;
+        table.Mianji[i] = area;
+        table.Jixin[i] = 0;
+        table.Gaoya[i] = 0;
+        table.Index[i] = i+1;
+    }
+}
+
 /*清空数据表数据*/
 void SparkInfo::tableClear()
 {

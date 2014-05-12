@@ -16,10 +16,17 @@ class AutoDialog : public QDialog
 
 public:
     explicit AutoDialog(QWidget *parent = 0);
+    long deep;
+    unsigned int current;
+    unsigned int area;
+    unsigned int effect;
     ~AutoDialog();
 
 protected:
     void keyPressEvent(QKeyEvent *);
+
+public slots:
+    void valueChange();
 
 private:
     Ui::AutoDialog *ui;

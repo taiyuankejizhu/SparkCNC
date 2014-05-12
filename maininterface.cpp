@@ -26,6 +26,9 @@ MainInterface::MainInterface(QWidget *parent) :
     initHardware();
 #endif
 
+    FPGA_Init();
+    printf("FPGA_Init()!\n");
+
     XYZ_Update(L_X_CURRENT);
     XYZ_Update(L_Y_CURRENT);
     XYZ_Update(L_Z_CURRENT);
@@ -89,9 +92,6 @@ void MainInterface::initHardware()
 
     FM25V02_Init();
     printf("FM25V02_Init()!\n");
-
-    GPMI_Init();
-    printf("GPMI_Init()!\n");
 
     EightBytes  rd_x;
     EightBytes  rd_y;
@@ -214,6 +214,10 @@ void MainInterface::keyPressEvent( QKeyEvent *k )
             if(Fn != NULL)
                 Fn->click();
             break;
+        /*放电监听D键*/
+        case Qt::Key_D:
+            spark_info->reverseBool(B_START);
+            break;
         case Qt::Key_X:
             command ->setFocus();
             command ->setStatus(0x10);
@@ -236,22 +240,8 @@ void MainInterface::keyPressEvent( QKeyEvent *k )
 
             break;
         case Qt::Key_F9:
-#ifdef ARM
-            GPMI_Info();
-#endif
-            break;
         case Qt::Key_F10:
-#ifdef ARM
-            GPMI_Info();
-#endif
-            break;
-        /*放电开关，监听‘F12’键*/
-        case Qt::Key_F12:
-            spark_info->reverseBool(B_START);
-            break;
-        /*放电开关，监听‘F11’键*/
-        case Qt::Key_F11:
-            spark_info->reverseBool(B_START);
+            FPGA_Info();
             break;
         /*这里的Enter键用来响应放电数据表的段选和删除行*/
         case Qt::Key_Enter:

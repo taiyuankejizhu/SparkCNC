@@ -32,8 +32,8 @@ SOURCES += main.cpp\
     autodialog.cpp \
     qparameter.cpp \
     scanthread.cpp \
-    gpmi.c \
-    jumpdialog.cpp
+    jumpdialog.cpp \
+    fpga.c
 
 HEADERS  += \
     qcheck.h \
@@ -59,8 +59,8 @@ HEADERS  += \
     autodialog.h \
     qparameter.h \
     scanthread.h \
-    gpmi.h \
-    jumpdialog.h
+    jumpdialog.h \
+    fpga.h
 
 FORMS    += \
     seconlevel_f3.ui \
