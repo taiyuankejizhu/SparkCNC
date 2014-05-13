@@ -15,7 +15,7 @@ typedef unsigned int uint32;
 #define Y_OFFSET 0x40
 #define Z_OFFSET 0x80
 #define IO_OFFSET 0xC0
-#define OS_OFFSET 0xE0
+#define OSC_OFFSET 0xE0
 #define DATA_OFFSET 0x00
 
 /*
