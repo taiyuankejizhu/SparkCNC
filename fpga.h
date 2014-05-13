@@ -9,13 +9,16 @@ typedef unsigned int uint32;
 
 //#define PAGE_1 0x00
 #define GPMI_BASE 0x0000
-#define ISA_BASE 0x0378
+#define PARPORT_BASE 0x0378
+#define ISA_BASE 0x0240
 
 #define X_OFFSET 0x00
-#define Y_OFFSET 0x40
-#define Z_OFFSET 0x80
-#define IO_OFFSET 0xC0
-#define OSC_OFFSET 0xE0
+#define Y_OFFSET 0x04
+#define Z_OFFSET 0x08
+#define OSC_OFFSET 0x10
+#define IO_OFFSET 0x18
+#define SPI_OFFSET 0x20
+
 #define DATA_OFFSET 0x00
 
 /*

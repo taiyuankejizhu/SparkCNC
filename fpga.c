@@ -211,7 +211,7 @@ uint32 GPMI_Read(uint32 addr ,uint8 *pBuf ,uint32 num)
 uint32 ISA_Read(uint32 addr ,uint8 *pBuf ,uint32 num)
 {
     uint32 n = 0;
-    addr += ISA_BASE;
+    addr += PARPORT_BASE;
 
     if(fpga_fd < 0)
         return 0;
@@ -291,7 +291,7 @@ uint32 GPMI_Write(uint32 addr ,uint8 *pBuf ,uint32 num)
 uint32 ISA_Write(uint32 addr ,uint8 *pBuf ,uint32 num)
 {
     uint32 n = 0;
-    addr += ISA_BASE;
+    addr += PARPORT_BASE;
 
     if(fpga_fd < 0)
         return 0;
