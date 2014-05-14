@@ -7,6 +7,8 @@ typedef unsigned short uint16;
 
 typedef unsigned int uint32;
 
+typedef long uint64;
+
 //#define PAGE_1 0x00
 #define GPMI_BASE 0x0000
 #define PARPORT_BASE 0x0378
@@ -109,6 +111,121 @@ extern "C" {
 #endif
 
 uint32 FPGA_Write(uint32 , uint8 *,uint32);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		IO0_Write
+** Descriptions:		FPGA写入IO0
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  IO0的值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+void IO0_Write(uint8);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		IO1_Write
+** Descriptions:		FPGA写入IO1
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  IO1的值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+void IO1_Write(uint8);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		IO2_Write
+** Descriptions:		FPGA写入IO2
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  IO2的值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+void IO2_Write(uint8);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		IO3_Write
+** Descriptions:		FPGA写入IO3
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  IO3的值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+void IO3_Write(uint8);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		IO4_Write
+** Descriptions:		FPGA写入IO4
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  IO4的值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+void IO4_Write(uint8);
 
 #ifdef __cplusplus
 

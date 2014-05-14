@@ -389,3 +389,436 @@ uint32 FPGA_Write(uint32 addr ,uint8 *pBuf ,uint32 num)
     return ret;
 }
 
+/*
+********************************************************************************************************
+** Function name:		Voltage_Read
+** Descriptions:		FPGA读取电压
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  电压值
+********************************************************************************************************
+*/
+uint8 Voltage_Read(void)
+{
+    uint8 ret = 0;
+    uint8 out[2];
+    uint8 in[2];
+    memset(out ,0x02 ,sizeof out);
+    memset(in ,0x00 ,sizeof in);
+#ifdef ARM
+    GPMI_Write(GPMI_BASE+OSC_OFFSET ,out ,1);
+    GPMI_Read(GPMI_BASE+OSC_OFFSET+1 ,in ,1);
+#endif
+#ifdef X86
+    ISA_Write(ISA_BASE+OSC_OFFSET ,out ,1);
+    ISA_Read(ISA_BASE+OSC_OFFSET+1 ,in ,1);
+#endif
+    ret = in[0];
+    return ret;
+}
+
+/*
+********************************************************************************************************
+** Function name:		X_Count
+** Descriptions:		FPGA读取X轴计数值
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint64  X轴计数值
+********************************************************************************************************
+*/
+uint64 X_Count(void)
+{
+    uint64 ret = 0;
+    uint8 out[2];
+    uint8 in[4];
+    memset(out ,0x08 ,sizeof out);
+    memset(in ,0x00 ,sizeof in);
+#ifdef ARM
+    GPMI_Write(GPMI_BASE+X_OFFSET ,out ,1);
+    GPMI_Read(GPMI_BASE+X_OFFSET+1 ,in ,3);
+#endif
+#ifdef X86
+    ISA_Write(ISA_BASE+X_OFFSET ,out ,1);
+    ISA_Read(ISA_BASE+X_OFFSET+1 ,in ,3);
+#endif
+
+    if(in[2] & 0x80)
+        in[3] = 0xff;
+    else
+        in[3] = 0x00;
+    ret = in[3];
+    ret <<= 8;
+    ret += in[2];
+    ret <<= 8;
+    ret += in[1];
+    ret <<= 8;
+    ret += in[0];
+
+    if(ret > 9999999)
+        ret = 9999999;
+    if(ret < -9999999)
+        ret = -9999999;
+
+    return ret;
+}
+
+/*
+********************************************************************************************************
+** Function name:		Y_Count
+** Descriptions:		FPGA读取Y轴计数值
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint64  Y轴计数值
+********************************************************************************************************
+*/
+uint64 Y_Count(void)
+{
+    uint64 ret = 0;
+    uint8 out[2];
+    uint8 in[4];
+    memset(out ,0x08 ,sizeof out);
+    memset(in ,0x00 ,sizeof in);
+#ifdef ARM
+    GPMI_Write(GPMI_BASE+Y_OFFSET ,out ,1);
+    GPMI_Read(GPMI_BASE+Y_OFFSET+1 ,in ,3);
+#endif
+#ifdef X86
+    ISA_Write(ISA_BASE+Y_OFFSET ,out ,1);
+    ISA_Read(ISA_BASE+Y_OFFSET+1 ,in ,3);
+#endif
+
+    if(in[2] & 0x80)
+        in[3] = 0xff;
+    else
+        in[3] = 0x00;
+    ret = in[3];
+    ret <<= 8;
+    ret += in[2];
+    ret <<= 8;
+    ret += in[1];
+    ret <<= 8;
+    ret += in[0];
+
+    if(ret > 9999999)
+        ret = 9999999;
+    if(ret < -9999999)
+        ret = -9999999;
+
+    return ret;
+}
+
+/*
+********************************************************************************************************
+** Function name:		Z_Count
+** Descriptions:		FPGA读取Z轴计数值
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint64  Z轴计数值
+********************************************************************************************************
+*/
+uint64 Z_Count(void)
+{
+    uint64 ret = 0;
+    uint8 out[2];
+    uint8 in[4];
+    memset(out ,0x08 ,sizeof out);
+    memset(in ,0x00 ,sizeof in);
+#ifdef ARM
+    GPMI_Write(GPMI_BASE+Z_OFFSET ,out ,1);
+    GPMI_Read(GPMI_BASE+Z_OFFSET+1 ,in ,3);
+#endif
+#ifdef X86
+    ISA_Write(ISA_BASE+Z_OFFSET ,out ,1);
+    ISA_Read(ISA_BASE+Z_OFFSET+1 ,in ,3);
+#endif
+
+    if(in[2] & 0x80)
+        in[3] = 0xff;
+    else
+        in[3] = 0x00;
+    ret = in[3];
+    ret <<= 8;
+    ret += in[2];
+    ret <<= 8;
+    ret += in[1];
+    ret <<= 8;
+    ret += in[0];
+
+    if(ret > 9999999)
+        ret = 9999999;
+    if(ret < -9999999)
+        ret = -9999999;
+
+    return ret;
+}
+
+/*
+********************************************************************************************************
+** Function name:		X_Velocity
+** Descriptions:		FPGA读取X速度数值
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint64  X轴速度值
+********************************************************************************************************
+*/
+uint64 X_Velocity(void)
+{
+    uint64 ret = 0;
+    uint8 out[2];
+    uint8 in[4];
+    memset(out ,0x40 ,sizeof out);
+    memset(in ,0x00 ,sizeof in);
+#ifdef ARM
+    GPMI_Write(GPMI_BASE+X_OFFSET ,out ,1);
+    GPMI_Read(GPMI_BASE+X_OFFSET+1 ,in ,2);
+#endif
+#ifdef X86
+    ISA_Write(ISA_BASE+X_OFFSET ,out ,1);
+    ISA_Read(ISA_BASE+X_OFFSET+1 ,in ,2);
+#endif
+
+    if(in[1] & 0x80){
+        in[2] = 0xff;
+        in[3] = 0xff;
+    }
+    else{
+        in[2] = 0x00;
+        in[3] = 0x00;
+    }
+    ret = in[3];
+    ret <<= 8;
+    ret += in[2];
+    ret <<= 8;
+    ret += in[1];
+    ret <<= 8;
+    ret += in[0];
+
+    if(ret > 9999999)
+        ret = 9999999;
+    if(ret < -9999999)
+        ret = -9999999;
+
+    return ret;
+}
+
+/*
+********************************************************************************************************
+** Function name:		Y_Velocity
+** Descriptions:		FPGA读取Y速度数值
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint64  Y轴速度值
+********************************************************************************************************
+*/
+uint64 Y_Velocity(void)
+{
+    uint64 ret = 0;
+    uint8 out[2];
+    uint8 in[4];
+    memset(out ,0x40 ,sizeof out);
+    memset(in ,0x00 ,sizeof in);
+#ifdef ARM
+    GPMI_Write(GPMI_BASE+Y_OFFSET ,out ,1);
+    GPMI_Read(GPMI_BASE+Y_OFFSET+1 ,in ,2);
+#endif
+#ifdef X86
+    ISA_Write(ISA_BASE+Y_OFFSET ,out ,1);
+    ISA_Read(ISA_BASE+Y_OFFSET+1 ,in ,2);
+#endif
+
+    if(in[1] & 0x80){
+        in[2] = 0xff;
+        in[3] = 0xff;
+    }
+    else{
+        in[2] = 0x00;
+        in[3] = 0x00;
+    }
+    ret = in[3];
+    ret <<= 8;
+    ret += in[2];
+    ret <<= 8;
+    ret += in[1];
+    ret <<= 8;
+    ret += in[0];
+
+    if(ret > 9999999)
+        ret = 9999999;
+    if(ret < -9999999)
+        ret = -9999999;
+
+    return ret;
+}
+
+/*
+********************************************************************************************************
+** Function name:		Z_Velocity
+** Descriptions:		FPGA读取Z速度数值
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint64  Z轴速度值
+********************************************************************************************************
+*/
+uint64 Z_Velocity(void)
+{
+    uint64 ret = 0;
+    uint8 out[2];
+    uint8 in[4];
+    memset(out ,0x40 ,sizeof out);
+    memset(in ,0x00 ,sizeof in);
+#ifdef ARM
+    GPMI_Write(GPMI_BASE+Z_OFFSET ,out ,1);
+    GPMI_Read(GPMI_BASE+Z_OFFSET+1 ,in ,2);
+#endif
+#ifdef X86
+    ISA_Write(ISA_BASE+Z_OFFSET ,out ,1);
+    ISA_Read(ISA_BASE+Z_OFFSET+1 ,in ,2);
+#endif
+
+    if(in[1] & 0x80){
+        in[2] = 0xff;
+        in[3] = 0xff;
+    }
+    else{
+        in[2] = 0x00;
+        in[3] = 0x00;
+    }
+    ret = in[3];
+    ret <<= 8;
+    ret += in[2];
+    ret <<= 8;
+    ret += in[1];
+    ret <<= 8;
+    ret += in[0];
+
+    if(ret > 9999999)
+        ret = 9999999;
+    if(ret < -9999999)
+        ret = -9999999;
+
+    return ret;
+}
+
+/*
+********************************************************************************************************
+** Function name:		IO0_Write
+** Descriptions:		FPGA写入IO0
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  IO0的值
+   IO1 xxx*****         音量大小
+   IO1 ***x****         音量开关
+   IO1 ****x***         24V电压开关
+********************************************************************************************************
+*/
+void IO0_Write(uint8 c)
+{
+
+    uint8 out[2];
+    memset(out ,c ,sizeof out);
+#ifdef ARM
+    GPMI_Write(GPMI_BASE+IO_OFFSET+0 ,out ,1);
+#endif
+#ifdef X86
+    ISA_Write(ISA_BASE+IO_OFFSET+0 ,out ,1);
+#endif
+
+}
+
+/*
+********************************************************************************************************
+** Function name:		IO1_Write
+** Descriptions:		FPGA写入IO1
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  IO1的值
+   IO1 *x******         总电源开关标志
+   IO1 **x*****         放电极性标志
+   IO1 ****x***         油泵开关标志
+   IO1 *****x**         变压器开关标志
+   IO1 ******x*         风扇开关标志
+   IO1 *******x         副电源开关标志
+********************************************************************************************************
+*/
+void IO1_Write(uint8 c)
+{
+
+    uint8 out[2];
+    memset(out ,c ,sizeof out);
+#ifdef ARM
+    GPMI_Write(GPMI_BASE+IO_OFFSET+1 ,out ,1);
+#endif
+#ifdef X86
+    ISA_Write(ISA_BASE+IO_OFFSET+1 ,out ,1);
+#endif
+
+}
+
+/*
+********************************************************************************************************
+** Function name:		IO2_Write
+** Descriptions:		FPGA写入IO2
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  IO2的值
+********************************************************************************************************
+*/
+void IO2_Write(uint8 c)
+{
+
+    uint8 out[2];
+    memset(out ,c ,sizeof out);
+#ifdef ARM
+    GPMI_Write(GPMI_BASE+IO_OFFSET+2 ,out ,1);
+#endif
+#ifdef X86
+    ISA_Write(ISA_BASE+IO_OFFSET+2 ,out ,1);
+#endif
+
+}
+
+/*
+********************************************************************************************************
+** Function name:		IO3_Write
+** Descriptions:		FPGA写入IO3
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  IO3的值
+********************************************************************************************************
+*/
+void IO3_Write(uint8 c)
+{
+
+    uint8 out[2];
+    memset(out ,c ,sizeof out);
+#ifdef ARM
+    GPMI_Write(GPMI_BASE+IO_OFFSET+3 ,out ,1);
+#endif
+#ifdef X86
+    ISA_Write(ISA_BASE+IO_OFFSET+3 ,out ,1);
+#endif
+
+}
+
+/*
+********************************************************************************************************
+** Function name:		IO4_Write
+** Descriptions:		FPGA写入IO4
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  IO4的值
+********************************************************************************************************
+*/
+void IO4_Write(uint8 c)
+{
+
+    uint8 out[2];
+    memset(out ,c ,sizeof out);
+#ifdef ARM
+    GPMI_Write(GPMI_BASE+IO_OFFSET+4 ,out ,1);
+#endif
+#ifdef X86
+    ISA_Write(ISA_BASE+IO_OFFSET+4 ,out ,1);
+#endif
+
+}

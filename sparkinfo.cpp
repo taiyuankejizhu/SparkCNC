@@ -87,6 +87,9 @@ void SparkInfo::updateTable()
 void SparkInfo::setBool(unsigned int i,bool b)
 {
     if(i < B_LENGTH){
+        /*布尔数组状态更新*/
+        if(i != 0)
+            b_array[0] = true;
         b_array[i] = b;
         if(i == B_START|| i == B_TIME){
             emit startChange();
@@ -99,6 +102,9 @@ void SparkInfo::setBool(unsigned int i,bool b)
 void SparkInfo::reverseBool(unsigned int i)
 {
     if(i < B_LENGTH){
+        /*布尔数组状态更新*/
+        if(i != 0)
+            b_array[0] = true;
         if(b_array[i])
             b_array[i] = false;
         else

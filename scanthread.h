@@ -15,6 +15,12 @@ public:
     unsigned int a_cycle;
     unsigned int b_cycle;
 
+    unsigned char io_0;
+    unsigned char io_1;
+    unsigned char io_2;
+    unsigned char io_3;
+    unsigned char io_4;
+
     void run();
 signals:
 

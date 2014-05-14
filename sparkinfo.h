@@ -7,25 +7,26 @@
 #define UINT_SLOT 1         /*无符号整型数组的槽标记*/
 #define L_SLOT 2            /*长整型数组的槽标记*/
 
-#define B_LENGTH 15         /*布尔数组的长度*/
+#define B_LENGTH 20         /*布尔数组的长度*/
 #define UINT_LENGTH 10      /*无符号整型数组的长度*/
 #define L_LENGTH 20          /*长整型数组的长度*/
 
-#define B_PUMP 0            /*冷却油泵的开关索引*/
-#define B_POWER 1           /*副电源的开关索引*/
-#define B_LOCK 2            /*机床锁定的开关索引*/
-#define B_REVERSE 3         /*反加工的开关索引*/
-#define B_START 4           /*放电加工的开关索引*/
-#define B_TIME 5            /*当前时间的开关索引*/
-#define B_BOTTOM 6          /*修底的开关索引*/
-#define B_FIRE 7            /*火警的开关索引*/
-#define B_OIL 8             /*油位报警的开关索引*/
-#define B_DEEPHOLE 9        /*深孔报警的开关索引*/
-#define B_XYLOCK 10         /*XY轴锁定的开关索引*/
-#define B_SLEEP 11          /*屏幕睡眠的开关索引*/
-#define B_SCREEN 12         /*屏幕状态的索引*/
-#define B_SHUTDOWN 13       /*关机的开关索引*/
-#define B_SOUND 14          /*按键声音的开关索引*/
+#define B_UPDATE 0          /*布尔数组有更新的开关索引*/
+#define B_PUMP 1            /*冷却油泵的开关索引*/
+#define B_POWER 2           /*副电源的开关索引*/
+#define B_LOCK 3            /*机床锁定的开关索引*/
+#define B_REVERSE 4         /*反加工的开关索引*/
+#define B_START 5           /*放电加工的开关索引*/
+#define B_TIME 6            /*当前时间的开关索引*/
+#define B_BOTTOM 7          /*修底的开关索引*/
+#define B_FIRE 8            /*火警的开关索引*/
+#define B_OIL 9             /*油位报警的开关索引*/
+#define B_DEEPHOLE 10        /*深孔报警的开关索引*/
+#define B_XYLOCK 11         /*XY轴锁定的开关索引*/
+#define B_SLEEP 12          /*屏幕睡眠的开关索引*/
+#define B_SCREEN 13         /*屏幕状态的索引*/
+#define B_SHUTDOWN 14       /*关机的开关索引*/
+#define B_SOUND 15          /*按键声音的开关索引*/
 
 #define UINT_VOLTAGE 0      /*放电电压值的索引*/
 #define UINT_CURRENT 1      /*放电电流值的索引*/
@@ -113,16 +114,21 @@ const Table table_init = {
 
 const bool bool_init[] = {
         false ,false ,false ,false ,false ,
-        true ,false ,false ,false ,false ,
+        false ,true ,false ,false ,false ,
+        false ,false ,false ,false ,false ,
         false ,false ,false ,false ,false ,
 };
 
 const unsigned int uint_init[] = {
-        220, 0, 10, 0, 5, 0, 0, 0, 0, 0,
+        220, 0, 10, 0, 5,
+        0, 0, 0, 0, 0,
 };
 
 const long long_init[] = {
-        0, 1, -7777500, -7777500, -7777500, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 1, -7777500, -7777500, -7777500,
+        0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0,
 };
 
 class SparkInfo : public QObject
