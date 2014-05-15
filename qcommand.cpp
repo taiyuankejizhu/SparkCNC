@@ -274,8 +274,16 @@ void QCommand::finalSubmit(QString s)
         for(; fcount > 0;fcount --)
             d = d*10;
         l = (long)d;
-        if(ok)
-            spark_info->setLong(target & 0x0F , l);
+        if(ok){
+            if((target & 0x0F)==L_X_CURRENT||(target & 0x0F)==L_Y_CURRENT||(target & 0x0F)==L_Z_CURRENT){
+                /*设置当前位置*/
+                spark_info->setLong(target & 0x0F , l);
+                /*设置当前位置的偏移 ，Offset = Position - Count*/
+                spark_info->setLong((target & 0x0F)+(L_X_OFFSET-L_X_CURRENT) ,l - spark_info->l_array[(target & 0x0F)+(L_X_COUNTER-L_X_CURRENT)]);
+            }
+            else
+                spark_info->setLong(target & 0x0F , l);
+        }
         break;
     default :
         break;

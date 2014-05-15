@@ -9,22 +9,23 @@ ScanThread::ScanThread(QObject *parent) :
     a_cycle = 0;
     b_cycle = 0;
 
-    io_0 = 0x10;
-    io_1 = 0x80;
-    io_2 = 0x00;
-    io_3 = 0x00;
-    io_4 = 0x00;
+    /*初始化IO*/
+    IOZ0_Write(spark_info->c_array[C_IOZ_0]);
+
+    OSC0_Write(spark_info->c_array[C_OTPS_0]);
+    OSC1_Write(spark_info->c_array[C_OTPS_1]);
+    OSC2_Write(0xff);
+
+    IO0_Write(spark_info->c_array[C_IO_0]);
+    IO1_Write(spark_info->c_array[C_IO_1]);
+    IO2_Write(spark_info->c_array[C_IO_2]);
+    IO3_Write(spark_info->c_array[C_IO_3]);
+    IO4_Write(spark_info->c_array[C_IO_4]);
 
 }
 
 void ScanThread::run()
 {
-    /*初始化IO*/
-    IO0_Write(io_0);
-    IO1_Write(io_1);
-    IO2_Write(io_2);
-    IO3_Write(io_3);
-    IO4_Write(io_4);
 
     while(1){
 
@@ -47,29 +48,47 @@ void ScanThread::run()
         if(spark_info->b_array[B_UPDATE]){
 
             if(spark_info->b_array[B_SOUND])
-                io_0 |= 0x08;
+                spark_info->c_array[C_IO_0] |= 0x08;
             else
-                io_0 &= 0xf7;
+                spark_info->c_array[C_IO_0] &= 0xf7;
 
             if(spark_info->b_array[B_PUMP])
-                io_1 |= 0x10;
+                spark_info->c_array[C_IO_1] |= 0x10;
             else
-                io_1 &= 0xef;
+                spark_info->c_array[C_IO_1] &= 0xef;
 
             if(spark_info->b_array[B_POWER])
-                io_1 |= 0x80;
+                spark_info->c_array[C_IO_1] |= 0x80;
             else
-                io_1 &= 0x7f;
+                spark_info->c_array[C_IO_1] &= 0x7f;
 
             /*更新IO端口*/
-            IO0_Write(io_0);
-            IO1_Write(io_1);
+            IO0_Write(spark_info->c_array[C_IO_0]);
+            IO1_Write(spark_info->c_array[C_IO_1]);
 
             spark_info->b_array[B_UPDATE] = false;
         }
         else{
-
+            spark_info->c_array[C_IO_0] = spark_info->c_array[C_IO_0];
+            spark_info->c_array[C_IO_1] = spark_info->c_array[C_IO_1];
         }
+
+        /*读取光栅计数值*/
+        spark_info->setLong(L_X_COUNTER ,X_Count());
+        spark_info->setLong(L_Y_COUNTER ,Y_Count());
+        spark_info->setLong(L_Z_COUNTER ,Z_Count());
+
+        /*读取速度值*/
+        if(c_cycle == C_CYCLE){
+            spark_info->setLong(L_X_VELOCITY ,X_Velocity());
+            spark_info->setLong(L_Y_VELOCITY ,Y_Velocity());
+            spark_info->setLong(L_Z_VELOCITY ,Z_Velocity());
+            c_cycle = 0;
+        }
+        c_cycle++;
+
+        /*读取电压值*/
+        spark_info->setUInt(UINT_VOLTAGE ,Voltage_Read());
 
         msleep(200);
     }

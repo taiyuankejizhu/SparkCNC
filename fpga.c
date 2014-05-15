@@ -211,7 +211,7 @@ uint32 GPMI_Read(uint32 addr ,uint8 *pBuf ,uint32 num)
 uint32 ISA_Read(uint32 addr ,uint8 *pBuf ,uint32 num)
 {
     uint32 n = 0;
-    addr += PARPORT_BASE;
+    addr += ISA_BASE;
 
     if(fpga_fd < 0)
         return 0;
@@ -291,7 +291,7 @@ uint32 GPMI_Write(uint32 addr ,uint8 *pBuf ,uint32 num)
 uint32 ISA_Write(uint32 addr ,uint8 *pBuf ,uint32 num)
 {
     uint32 n = 0;
-    addr += PARPORT_BASE;
+    addr += ISA_BASE;
 
     if(fpga_fd < 0)
         return 0;
@@ -405,14 +405,10 @@ uint8 Voltage_Read(void)
     uint8 in[2];
     memset(out ,0x02 ,sizeof out);
     memset(in ,0x00 ,sizeof in);
-#ifdef ARM
-    GPMI_Write(GPMI_BASE+OSC_OFFSET ,out ,1);
-    GPMI_Read(GPMI_BASE+OSC_OFFSET+1 ,in ,1);
-#endif
-#ifdef X86
-    ISA_Write(ISA_BASE+OSC_OFFSET ,out ,1);
-    ISA_Read(ISA_BASE+OSC_OFFSET+1 ,in ,1);
-#endif
+
+    FPGA_Write(OSC_OFFSET ,out ,1);
+    FPGA_Read(OSC_OFFSET+1 ,in ,1);
+
     ret = in[0];
     return ret;
 }
@@ -433,14 +429,9 @@ uint64 X_Count(void)
     uint8 in[4];
     memset(out ,0x08 ,sizeof out);
     memset(in ,0x00 ,sizeof in);
-#ifdef ARM
-    GPMI_Write(GPMI_BASE+X_OFFSET ,out ,1);
-    GPMI_Read(GPMI_BASE+X_OFFSET+1 ,in ,3);
-#endif
-#ifdef X86
-    ISA_Write(ISA_BASE+X_OFFSET ,out ,1);
-    ISA_Read(ISA_BASE+X_OFFSET+1 ,in ,3);
-#endif
+
+    FPGA_Write(X_OFFSET ,out ,1);
+    FPGA_Read(X_OFFSET+1 ,in ,3);
 
     if(in[2] & 0x80)
         in[3] = 0xff;
@@ -478,14 +469,9 @@ uint64 Y_Count(void)
     uint8 in[4];
     memset(out ,0x08 ,sizeof out);
     memset(in ,0x00 ,sizeof in);
-#ifdef ARM
-    GPMI_Write(GPMI_BASE+Y_OFFSET ,out ,1);
-    GPMI_Read(GPMI_BASE+Y_OFFSET+1 ,in ,3);
-#endif
-#ifdef X86
-    ISA_Write(ISA_BASE+Y_OFFSET ,out ,1);
-    ISA_Read(ISA_BASE+Y_OFFSET+1 ,in ,3);
-#endif
+
+    FPGA_Write(Y_OFFSET ,out ,1);
+    FPGA_Read(Y_OFFSET+1 ,in ,3);
 
     if(in[2] & 0x80)
         in[3] = 0xff;
@@ -523,14 +509,9 @@ uint64 Z_Count(void)
     uint8 in[4];
     memset(out ,0x08 ,sizeof out);
     memset(in ,0x00 ,sizeof in);
-#ifdef ARM
-    GPMI_Write(GPMI_BASE+Z_OFFSET ,out ,1);
-    GPMI_Read(GPMI_BASE+Z_OFFSET+1 ,in ,3);
-#endif
-#ifdef X86
-    ISA_Write(ISA_BASE+Z_OFFSET ,out ,1);
-    ISA_Read(ISA_BASE+Z_OFFSET+1 ,in ,3);
-#endif
+
+    FPGA_Write(Z_OFFSET ,out ,1);
+    FPGA_Read(Z_OFFSET+1 ,in ,3);
 
     if(in[2] & 0x80)
         in[3] = 0xff;
@@ -568,14 +549,9 @@ uint64 X_Velocity(void)
     uint8 in[4];
     memset(out ,0x40 ,sizeof out);
     memset(in ,0x00 ,sizeof in);
-#ifdef ARM
-    GPMI_Write(GPMI_BASE+X_OFFSET ,out ,1);
-    GPMI_Read(GPMI_BASE+X_OFFSET+1 ,in ,2);
-#endif
-#ifdef X86
-    ISA_Write(ISA_BASE+X_OFFSET ,out ,1);
-    ISA_Read(ISA_BASE+X_OFFSET+1 ,in ,2);
-#endif
+
+    FPGA_Write(X_OFFSET ,out ,1);
+    FPGA_Read(X_OFFSET+1 ,in ,2);
 
     if(in[1] & 0x80){
         in[2] = 0xff;
@@ -617,14 +593,9 @@ uint64 Y_Velocity(void)
     uint8 in[4];
     memset(out ,0x40 ,sizeof out);
     memset(in ,0x00 ,sizeof in);
-#ifdef ARM
-    GPMI_Write(GPMI_BASE+Y_OFFSET ,out ,1);
-    GPMI_Read(GPMI_BASE+Y_OFFSET+1 ,in ,2);
-#endif
-#ifdef X86
-    ISA_Write(ISA_BASE+Y_OFFSET ,out ,1);
-    ISA_Read(ISA_BASE+Y_OFFSET+1 ,in ,2);
-#endif
+
+    FPGA_Write(Y_OFFSET ,out ,1);
+    FPGA_Read(Y_OFFSET+1 ,in ,2);
 
     if(in[1] & 0x80){
         in[2] = 0xff;
@@ -666,14 +637,9 @@ uint64 Z_Velocity(void)
     uint8 in[4];
     memset(out ,0x40 ,sizeof out);
     memset(in ,0x00 ,sizeof in);
-#ifdef ARM
-    GPMI_Write(GPMI_BASE+Z_OFFSET ,out ,1);
-    GPMI_Read(GPMI_BASE+Z_OFFSET+1 ,in ,2);
-#endif
-#ifdef X86
-    ISA_Write(ISA_BASE+Z_OFFSET ,out ,1);
-    ISA_Read(ISA_BASE+Z_OFFSET+1 ,in ,2);
-#endif
+
+    FPGA_Write(Z_OFFSET ,out ,1);
+    FPGA_Read(Z_OFFSET+1 ,in ,2);
 
     if(in[1] & 0x80){
         in[2] = 0xff;
@@ -701,6 +667,115 @@ uint64 Z_Velocity(void)
 
 /*
 ********************************************************************************************************
+** Function name:		PID_Tune
+** Descriptions:		调整PID参数
+** input parameters:
+**                      p:比例系数
+**                      i:积分系数
+**                      d:微分系数
+**                      s:未知
+** output parameters:   无
+** Returned value:      无
+********************************************************************************************************
+*/
+void PID_Tune(uint8 p,uint8 i,uint8 d,uint8 s)
+{
+    uint8 out[2];
+
+    memset(out ,0x02 ,sizeof out);
+
+    FPGA_Write(Z_OFFSET ,out ,1);
+
+    memset(out ,p ,sizeof out);
+    FPGA_Write(Z_OFFSET+1 ,out ,1);
+
+    memset(out ,0x02 ,sizeof out);
+    FPGA_Write(Z_OFFSET ,out ,1);
+
+    memset(out ,i ,sizeof out);
+    FPGA_Write(Z_OFFSET+2 ,out ,1);
+
+    memset(out ,0x02 ,sizeof out);
+    FPGA_Write(Z_OFFSET ,out ,1);
+
+    memset(out ,d ,sizeof out);
+    FPGA_Write(Z_OFFSET+3 ,out ,1);
+
+    memset(out ,0x03 ,sizeof out);
+    FPGA_Write(Z_OFFSET ,out ,1);
+
+    memset(out ,s ,sizeof out);
+    FPGA_Write(Z_OFFSET+1 ,out ,1);
+
+}
+
+/*
+********************************************************************************************************
+** Function name:		Z_Velocity_Control
+** Descriptions:		Z轴速度控制
+** input parameters:            Z轴速度值
+** output parameters:   无
+** Returned value:      无
+********************************************************************************************************
+*/
+void Z_Velocity_Control(long v)
+{
+    uint8 out[2];
+
+    memset(out ,0x04 ,sizeof out);
+    FPGA_Write(Z_OFFSET ,out ,1);
+
+    memset(out ,(char)v & 0xff ,sizeof out);
+    FPGA_Write(Z_OFFSET+1 ,out ,1);
+
+    memset(out ,0x04 ,sizeof out);
+    FPGA_Write(Z_OFFSET ,out ,1);
+
+    memset(out ,(char)v >> 8 ,sizeof out);
+    FPGA_Write(Z_OFFSET+2 ,out ,1);
+    /*something todo ,
+    IOZ0 &= 0xf8;
+    outb((Address_Z),0x01);
+    outb((Address_Z+1),IOZ0|=0x01);*/
+}
+
+/*
+********************************************************************************************************
+** Function name:		Z_Position_Control
+** Descriptions:		Z轴位置控制
+** input parameters:            Z轴位置
+** output parameters:   无
+** Returned value:      无
+********************************************************************************************************
+*/
+void Z_Position_Control(long p)
+{
+    uint8 out[2];
+
+    memset(out ,0x10 ,sizeof out);
+    FPGA_Write(Z_OFFSET ,out ,1);
+
+    memset(out ,(char)p & 0xff ,sizeof out);
+    FPGA_Write(Z_OFFSET+1 ,out ,1);
+
+    memset(out ,0x10 ,sizeof out);
+    FPGA_Write(Z_OFFSET ,out ,1);
+
+    memset(out ,(char)(p >> 8) & 0xff ,sizeof out);
+    FPGA_Write(Z_OFFSET+2 ,out ,1);
+
+    memset(out ,0x10 ,sizeof out);
+    FPGA_Write(Z_OFFSET ,out ,1);
+
+    memset(out ,(char)(p >> 16) & 0xff ,sizeof out);
+    FPGA_Write(Z_OFFSET+3 ,out ,1);
+    /*something todo ,
+    outb((Address_Z),0x01);
+    outb((Address_Z+1),IOZ0&=0xf8);*/
+}
+
+/*
+********************************************************************************************************
 ** Function name:		IO0_Write
 ** Descriptions:		FPGA写入IO0
 ** input parameters:    无
@@ -716,12 +791,7 @@ void IO0_Write(uint8 c)
 
     uint8 out[2];
     memset(out ,c ,sizeof out);
-#ifdef ARM
-    GPMI_Write(GPMI_BASE+IO_OFFSET+0 ,out ,1);
-#endif
-#ifdef X86
-    ISA_Write(ISA_BASE+IO_OFFSET+0 ,out ,1);
-#endif
+    FPGA_Write(IO_OFFSET+0 ,out ,1);
 
 }
 
@@ -745,12 +815,7 @@ void IO1_Write(uint8 c)
 
     uint8 out[2];
     memset(out ,c ,sizeof out);
-#ifdef ARM
-    GPMI_Write(GPMI_BASE+IO_OFFSET+1 ,out ,1);
-#endif
-#ifdef X86
-    ISA_Write(ISA_BASE+IO_OFFSET+1 ,out ,1);
-#endif
+    FPGA_Write(IO_OFFSET+1 ,out ,1);
 
 }
 
@@ -768,12 +833,7 @@ void IO2_Write(uint8 c)
 
     uint8 out[2];
     memset(out ,c ,sizeof out);
-#ifdef ARM
-    GPMI_Write(GPMI_BASE+IO_OFFSET+2 ,out ,1);
-#endif
-#ifdef X86
-    ISA_Write(ISA_BASE+IO_OFFSET+2 ,out ,1);
-#endif
+    FPGA_Write(IO_OFFSET+2 ,out ,1);
 
 }
 
@@ -791,12 +851,7 @@ void IO3_Write(uint8 c)
 
     uint8 out[2];
     memset(out ,c ,sizeof out);
-#ifdef ARM
-    GPMI_Write(GPMI_BASE+IO_OFFSET+3 ,out ,1);
-#endif
-#ifdef X86
-    ISA_Write(ISA_BASE+IO_OFFSET+3 ,out ,1);
-#endif
+    FPGA_Write(IO_OFFSET+3 ,out ,1);
 
 }
 
@@ -814,11 +869,91 @@ void IO4_Write(uint8 c)
 
     uint8 out[2];
     memset(out ,c ,sizeof out);
-#ifdef ARM
-    GPMI_Write(GPMI_BASE+IO_OFFSET+4 ,out ,1);
-#endif
-#ifdef X86
-    ISA_Write(ISA_BASE+IO_OFFSET+4 ,out ,1);
-#endif
+    FPGA_Write(IO_OFFSET+4 ,out ,1);
 
+}
+
+/*
+********************************************************************************************************
+** Function name:		IOZ0_Write
+** Descriptions:		FPGA写入IOZ0
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  IOZ0的值
+********************************************************************************************************
+*/
+void IOZ0_Write(uint8 c)
+{
+
+    uint8 out[2];
+
+    memset(out ,c ,sizeof out);
+    out[0] = 0x01;
+    FPGA_Write(Z_OFFSET ,out ,2);
+
+}
+
+/*
+********************************************************************************************************
+** Function name:		OSC0_Write
+** Descriptions:		FPGA写入OSC0
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  OSC0的值
+********************************************************************************************************
+*/
+void OSC0_Write(uint8 c)
+{
+
+    uint8 out[2];
+
+    memset(out ,0x01 ,sizeof out);
+    FPGA_Write(Z_OFFSET ,out ,1);
+
+    memset(out ,c ,sizeof out);
+    FPGA_Write(Z_OFFSET+1 ,out ,1);
+
+}
+
+/*
+********************************************************************************************************
+** Function name:		OSC1_Write
+** Descriptions:		FPGA写入OSC1
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  OSC1的值
+********************************************************************************************************
+*/
+void OSC1_Write(uint8 c)
+{
+
+    uint8 out[2];
+
+    memset(out ,0x01 ,sizeof out);
+    FPGA_Write(Z_OFFSET ,out ,1);
+
+    memset(out ,c ,sizeof out);
+    FPGA_Write(Z_OFFSET+2 ,out ,1);
+
+}
+
+/*
+********************************************************************************************************
+** Function name:		OSC2_Write
+** Descriptions:		FPGA写入OSC2
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  OSC2的值
+********************************************************************************************************
+*/
+void OSC2_Write(uint8 c)
+{
+
+    uint8 out[2];
+
+    memset(out ,0x02 ,sizeof out);
+    FPGA_Write(Z_OFFSET ,out ,1);
+
+    memset(out ,c ,sizeof out);
+    FPGA_Write(Z_OFFSET+3 ,out ,1);
 }

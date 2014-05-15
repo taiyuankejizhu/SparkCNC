@@ -6,10 +6,12 @@
 #define B_SLOT 0            /*布尔数组的槽标记*/
 #define UINT_SLOT 1         /*无符号整型数组的槽标记*/
 #define L_SLOT 2            /*长整型数组的槽标记*/
+#define C_SLOT 3            /*字符型数组的槽标记*/
 
 #define B_LENGTH 20         /*布尔数组的长度*/
 #define UINT_LENGTH 10      /*无符号整型数组的长度*/
 #define L_LENGTH 20          /*长整型数组的长度*/
+#define C_LENGTH 15           /*字符型数组的长度*/
 
 #define B_UPDATE 0          /*布尔数组有更新的开关索引*/
 #define B_PUMP 1            /*冷却油泵的开关索引*/
@@ -56,6 +58,25 @@
 #define L_X_COUNTER 14      /*X轴光栅计数值的索引*/
 #define L_Y_COUNTER 15      /*Y轴光栅计数值的索引*/
 #define L_Z_COUNTER 16      /*Z轴光栅计数值的索引*/
+#define L_X_VELOCITY 17     /*X轴速度值的索引*/
+#define L_Y_VELOCITY 18     /*Y轴速度值的索引*/
+#define L_Z_VELOCITY 19     /*Z轴速度值的索引*/
+
+#define C_IO_0 0            /*IO_0的值的索引*/
+#define C_IO_1 1            /*IO_1的值的索引*/
+#define C_IO_2 2            /*IO_2的值的索引*/
+#define C_IO_3 3            /*IO_3的值的索引*/
+#define C_IO_4 4            /*IO_4的值的索引*/
+
+#define C_OTPS_0 5          /*OTPS_0的值的索引*/
+#define C_OTPS_1 6          /*OTPS_1的值的索引*/
+#define C_IOPS_0 7          /*IOPS_0的值的索引*/
+
+#define C_OTPZ_0 8          /*OTPZ_0的值的索引*/
+#define C_OTPZ_1 9          /*OTPZ_1的值的索引*/
+#define C_IOPZ_0 10         /*IOPZ_0的值的索引*/
+
+#define C_IOZ_0 11          /*IOZ_0的值的索引*/
 
 struct Table
 {
@@ -120,15 +141,21 @@ const bool bool_init[] = {
 };
 
 const unsigned int uint_init[] = {
-        220, 0, 10, 0, 5,
+        0, 0, 10, 0, 5,
         0, 0, 0, 0, 0,
 };
 
 const long long_init[] = {
-        0, 1, -7777500, -7777500, -7777500,
         0, 0, 0, 0, 0,
         0, 0, 0, 0, 0,
         0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0,
+};
+
+const char char_init[] = {
+        0x10 ,0x80 ,0x00 ,0x00 ,0x00 ,
+        0x00 ,0x0b ,0x00 ,0x00 ,0x00 ,
+        0x00 ,0xe0 ,0x00 ,0x00 ,0x00 ,
 };
 
 class SparkInfo : public QObject
@@ -141,6 +168,7 @@ public:
     bool b_array[B_LENGTH];
     unsigned int uint_array[UINT_LENGTH];
     long l_array[L_LENGTH];
+    char c_array[C_LENGTH];
     Table table;
 
 private:
@@ -151,8 +179,9 @@ signals:
     void startChange();
     void boolChange();
     void longChange();
-    void xyzChange(int);
     void uintChange();
+    /*刷新XYZ显示数值*/
+    void xyzChange(int);
     void tableChange();
     void tableIndexChange();
     void tableRowChange();

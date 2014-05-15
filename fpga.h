@@ -11,7 +11,6 @@ typedef long uint64;
 
 //#define PAGE_1 0x00
 #define GPMI_BASE 0x0000
-#define PARPORT_BASE 0x0378
 #define ISA_BASE 0x0240
 
 #define X_OFFSET 0x00
@@ -21,6 +20,7 @@ typedef long uint64;
 #define IO_OFFSET 0x18
 #define SPI_OFFSET 0x20
 
+#define PARPORT_BASE 0x0378
 #define DATA_OFFSET 0x00
 
 /*
@@ -111,6 +111,167 @@ extern "C" {
 #endif
 
 uint32 FPGA_Write(uint32 , uint8 *,uint32);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		Voltage_Read
+** Descriptions:		FPGA读取电压
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  电压值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+uint8 Voltage_Read(void);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		X_Count
+** Descriptions:		FPGA读取X轴计数值
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint64  X轴计数值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+uint64 X_Count(void);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		Y_Count
+** Descriptions:		FPGA读取Y轴计数值
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint64  Y轴计数值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+uint64 Y_Count(void);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		Z_Count
+** Descriptions:		FPGA读取Z轴计数值
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint64  Z轴计数值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+uint64 Z_Count(void);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		X_Velocity
+** Descriptions:		FPGA读取X速度数值
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint64  X轴速度值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+uint64 X_Velocity(void);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		Y_Velocity
+** Descriptions:		FPGA读取Y速度数值
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint64  Y轴速度值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+uint64 Y_Velocity(void);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		Z_Velocity
+** Descriptions:		FPGA读取Z速度数值
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint64  Z轴速度值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+uint64 Z_Velocity(void);
 
 #ifdef __cplusplus
 
@@ -226,6 +387,98 @@ extern "C" {
 #endif
 
 void IO4_Write(uint8);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		IOZ0_Write
+** Descriptions:		FPGA写入IOZ0
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  IOZ0的值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+void IOZ0_Write(uint8);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		OSC0_Write
+** Descriptions:		FPGA写入OSC0
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  OSC0的值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+void OSC0_Write(uint8);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		OSC1_Write
+** Descriptions:		FPGA写入OSC1
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  OSC1的值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+void OSC1_Write(uint8);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		OSC2_Write
+** Descriptions:		FPGA写入OSC2
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  OSC2的值
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+void OSC2_Write(uint8);
 
 #ifdef __cplusplus
 

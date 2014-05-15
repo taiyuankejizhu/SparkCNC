@@ -4,9 +4,11 @@
 SparkInfo::SparkInfo(QObject *parent) :
     QObject(parent)
 {
+
     memcpy(b_array , bool_init ,sizeof b_array);
     memcpy(uint_array , uint_init ,sizeof uint_array);
     memcpy(l_array , long_init ,sizeof l_array);
+    memcpy(c_array , char_init ,sizeof c_array);
     tableInit();
 
     /*当前表的索引改变时，更新表的数据*/
@@ -122,15 +124,22 @@ void SparkInfo::setLong(unsigned int i,long l)
     if(i < L_LENGTH){
         l_array[i] = l;
         if(i == L_X_CURRENT||i == L_Y_CURRENT||i == L_Z_CURRENT){
-            if(i == L_Z_CURRENT){
-                setLong(L_DEEP_CURRENT ,l_array[L_Z_CURRENT]);
-            }
             emit xyzChange(i);
         }
         else if(i == L_X_ABSOLUTE||i == L_Y_ABSOLUTE||i == L_Z_ABSOLUTE){
             emit xyzChange(i);
         }
         else if(i == L_X_REMAIN||i == L_Y_REMAIN||i == L_Z_REMAIN){
+            emit xyzChange(i);
+        }
+        else if(i == L_X_COUNTER||i == L_Y_COUNTER||i == L_Z_COUNTER){
+            /*更新当前位置，Position = Offset + Count*/
+            if(i == L_X_COUNTER)
+                spark_info->setLong(L_X_CURRENT ,spark_info->l_array[L_X_OFFSET]+spark_info->l_array[L_X_COUNTER]);
+            if(i == L_Y_COUNTER)
+                spark_info->setLong(L_Y_CURRENT ,spark_info->l_array[L_Y_OFFSET]+spark_info->l_array[L_Y_COUNTER]);
+            if(i == L_Z_COUNTER)
+                spark_info->setLong(L_Z_CURRENT ,spark_info->l_array[L_Z_OFFSET]+spark_info->l_array[L_Z_COUNTER]);
             emit xyzChange(i);
         }
         else if(i == L_DEEP_CURRENT){
