@@ -778,12 +778,12 @@ void Z_Position_Control(long p)
 ********************************************************************************************************
 ** Function name:		IO0_Write
 ** Descriptions:		FPGA写入IO0
-** input parameters:    无
-** output parameters:   无
-** Returned value:      uint8  IO0的值
+** input parameters:    IO0的值
    IO1 xxx*****         音量大小
    IO1 ***x****         音量开关
    IO1 ****x***         24V电压开关
+** output parameters:   无
+** Returned value:      无
 ********************************************************************************************************
 */
 void IO0_Write(uint8 c)
@@ -799,15 +799,15 @@ void IO0_Write(uint8 c)
 ********************************************************************************************************
 ** Function name:		IO1_Write
 ** Descriptions:		FPGA写入IO1
-** input parameters:    无
-** output parameters:   无
-** Returned value:      uint8  IO1的值
+** input parameters:       IO1的值
    IO1 *x******         总电源开关标志
    IO1 **x*****         放电极性标志
    IO1 ****x***         油泵开关标志
    IO1 *****x**         变压器开关标志
    IO1 ******x*         风扇开关标志
    IO1 *******x         副电源开关标志
+** output parameters:   无
+** Returned value:      无
 ********************************************************************************************************
 */
 void IO1_Write(uint8 c)
@@ -823,9 +823,10 @@ void IO1_Write(uint8 c)
 ********************************************************************************************************
 ** Function name:		IO2_Write
 ** Descriptions:		FPGA写入IO2
-** input parameters:    无
+** input parameters:    IO2的值
+    IO2 ********        放电电流值
 ** output parameters:   无
-** Returned value:      uint8  IO2的值
+** Returned value:      无
 ********************************************************************************************************
 */
 void IO2_Write(uint8 c)
@@ -841,9 +842,10 @@ void IO2_Write(uint8 c)
 ********************************************************************************************************
 ** Function name:		IO3_Write
 ** Descriptions:		FPGA写入IO3
-** input parameters:    无
+** input parameters:    IO3的值
+    IO3 ****xxxx        高电压数值
 ** output parameters:   无
-** Returned value:      uint8  IO3的值
+** Returned value:      无
 ********************************************************************************************************
 */
 void IO3_Write(uint8 c)
@@ -859,9 +861,9 @@ void IO3_Write(uint8 c)
 ********************************************************************************************************
 ** Function name:		IO4_Write
 ** Descriptions:		FPGA写入IO4
-** input parameters:    无
+** input parameters:    IO4的值
 ** output parameters:   无
-** Returned value:      uint8  IO4的值
+** Returned value:      无
 ********************************************************************************************************
 */
 void IO4_Write(uint8 c)
@@ -877,9 +879,12 @@ void IO4_Write(uint8 c)
 ********************************************************************************************************
 ** Function name:		IOZ0_Write
 ** Descriptions:		FPGA写入IOZ0
-** input parameters:    无
+** input parameters:    IOZ0的值
+    IOZ0 **x*****       Z轴ENZ
+    IOZ0 ***x****       sl3
+    IOZ0 *****xxx       Z轴间隙
 ** output parameters:   无
-** Returned value:      uint8  IOZ0的值
+** Returned value:      无
 ********************************************************************************************************
 */
 void IOZ0_Write(uint8 c)
@@ -897,9 +902,9 @@ void IOZ0_Write(uint8 c)
 ********************************************************************************************************
 ** Function name:		OSC0_Write
 ** Descriptions:		FPGA写入OSC0
-** input parameters:    无
+** input parameters:    OSC0的值
 ** output parameters:   无
-** Returned value:      uint8  OSC0的值
+** Returned value:      无
 ********************************************************************************************************
 */
 void OSC0_Write(uint8 c)
@@ -919,9 +924,9 @@ void OSC0_Write(uint8 c)
 ********************************************************************************************************
 ** Function name:		OSC1_Write
 ** Descriptions:		FPGA写入OSC1
-** input parameters:    无
+** input parameters:    OSC1的值
 ** output parameters:   无
-** Returned value:      uint8  OSC1的值
+** Returned value:      无
 ********************************************************************************************************
 */
 void OSC1_Write(uint8 c)
@@ -941,9 +946,9 @@ void OSC1_Write(uint8 c)
 ********************************************************************************************************
 ** Function name:		OSC2_Write
 ** Descriptions:		FPGA写入OSC2
-** input parameters:    无
+** input parameters:    OSC2的值
 ** output parameters:   无
-** Returned value:      uint8  OSC2的值
+** Returned value:      无
 ********************************************************************************************************
 */
 void OSC2_Write(uint8 c)
@@ -956,4 +961,29 @@ void OSC2_Write(uint8 c)
 
     memset(out ,c ,sizeof out);
     FPGA_Write(Z_OFFSET+3 ,out ,1);
+}
+
+/*
+********************************************************************************************************
+** Function name:		Serial_Read
+** Descriptions:		串口读取数据
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  数据
+********************************************************************************************************
+*/
+uint8 Serial_Read(void)
+{
+    uint8 in[2];
+    uint32 n = 0;
+
+    memset(in ,0x00 ,sizeof in);
+
+    if(fpga_fd < 0)
+        return 0;
+
+    lseek(fpga_fd, SERIAL_BASE + BUFFER_OFFSET, SEEK_SET);
+    n = read(fpga_fd ,in ,1);
+
+    return in[0];
 }

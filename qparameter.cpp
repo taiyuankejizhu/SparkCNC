@@ -47,12 +47,16 @@ void Qparameter::drawBackground(QPainter *painter)
 {
     painter->save();
 
-    /*画背景色*/
-    painter->setPen(r_color);
-    painter->setBrush(r_color);
-    painter->fillRect(0,0,width(),height(),r_color);
+    QLinearGradient lg1(0, 0, 0, height());
+    lg1.setColorAt(0, QColor(255, 255, 255));
+    lg1.setColorAt(1, QColor(0, 0, 0));
 
     /*画边框色*/
+    painter->setPen(r_color);
+    painter->setBrush(r_color);
+    painter->fillRect(0,0,width(),height(),lg1);
+
+    /*画背景色*/
     painter->setPen(b_color);
     painter->setBrush(b_color);
     painter->fillRect(pad,pad,width()-2*pad,height()-2*pad,b_color);
@@ -60,7 +64,7 @@ void Qparameter::drawBackground(QPainter *painter)
     /*画分割线*/
     painter->setPen(r_color);
     painter->setBrush(r_color);
-    painter->drawLine(QPoint(width()/2 , 0) ,QPoint(width()/2 , height()));
+    painter->drawLine(QPoint(width()/2 , height()/2) ,QPoint(width()/2 , height()));
 
     painter->restore();
 }

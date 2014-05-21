@@ -20,8 +20,8 @@ typedef long uint64;
 #define IO_OFFSET 0x18
 #define SPI_OFFSET 0x20
 
-#define PARPORT_BASE 0x0378
-#define DATA_OFFSET 0x00
+#define SERIAL_BASE 0x02f7
+#define BUFFER_OFFSET 0x00
 
 /*
 ********************************************************************************************************
@@ -479,6 +479,29 @@ extern "C" {
 #endif
 
 void OSC2_Write(uint8);
+
+#ifdef __cplusplus
+
+}
+
+#endif
+
+/*
+********************************************************************************************************
+** Function name:		Serial_Read
+** Descriptions:		串口读取数据
+** input parameters:    无
+** output parameters:   无
+** Returned value:      uint8  数据
+********************************************************************************************************
+*/
+#ifdef __cplusplus
+
+extern "C" {
+
+#endif
+
+uint8 Serial_Read(void);
 
 #ifdef __cplusplus
 

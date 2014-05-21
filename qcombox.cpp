@@ -22,9 +22,13 @@ void Qcombox::drawBackground(QPainter *painter)
 {
     painter->save();
 
+    QLinearGradient lg1(0, height()/2, 0, height());
+    lg1.setColorAt(0, QColor(255, 255, 255));
+    lg1.setColorAt(1, QColor(0, 0, 0));
+
     painter->setPen(r_color);
     painter->setBrush(r_color);
-    painter->fillRect(0,0,width(),height(),r_color);
+    painter->fillRect(0,0,width(),height(),lg1);
 
     painter->setPen(b_color);
     painter->setBrush(b_color);

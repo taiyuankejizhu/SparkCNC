@@ -34,10 +34,14 @@ void Qindicate::drawBackground(QPainter *painter)
 {
     painter->save();
 
+    QLinearGradient lg1(0, 0, 0, height());
+    lg1.setColorAt(0, QColor(255, 255, 255));
+    lg1.setColorAt(1, QColor(0, 0, 0));
+
     /*画背景色*/
     painter->setPen(r_color);
     painter->setBrush(r_color);
-    painter->fillRect(0,0,width(),height(),r_color);
+    painter->fillRect(0,0,width(),height(),lg1);
 
     /*画边框色*/
     painter->setPen(b_color);
