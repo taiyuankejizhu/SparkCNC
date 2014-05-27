@@ -67,13 +67,13 @@ uint8 FM25V02_Init(void)
     }
     else{
         /*spi mode*/
-        ret = ioctl(spi_fb, SPI_IOC_WR_MODE, &mode);
-        if (ret == -1)
-                printf("can't set spi mode");
-
         ret = ioctl(spi_fb, SPI_IOC_RD_MODE, &mode);
         if (ret == -1)
                 printf("can't get spi mode");
+
+        ret = ioctl(spi_fb, SPI_IOC_WR_MODE, &mode);
+        if (ret == -1)
+                printf("can't set spi mode");
 
         /*bits per word*/
         ret = ioctl(spi_fb, SPI_IOC_WR_BITS_PER_WORD, &bits);

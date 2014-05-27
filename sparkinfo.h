@@ -11,7 +11,7 @@
 #define B_LENGTH 20         /*布尔数组的长度*/
 #define UINT_LENGTH 10      /*无符号整型数组的长度*/
 #define L_LENGTH 20          /*长整型数组的长度*/
-#define C_LENGTH 15           /*字符型数组的长度*/
+#define C_LENGTH 20           /*字符型数组的长度*/
 
 #define B_UPDATE 0          /*布尔数组有更新的开关索引*/
 #define B_PUMP 1            /*冷却油泵的开关索引*/
@@ -72,11 +72,21 @@
 #define C_OTPS_1 6          /*OTPS_1的值的索引*/
 #define C_IOPS_0 7          /*IOPS_0的值的索引*/
 
-#define C_OTPZ_0 8          /*OTPZ_0的值的索引*/
-#define C_OTPZ_1 9          /*OTPZ_1的值的索引*/
-#define C_IOPZ_0 10         /*IOPZ_0的值的索引*/
+#define C_OTPX_0 8          /*OTPX_0的值的索引*/
+#define C_OTPX_1 9          /*OTPX_1的值的索引*/
+#define C_IOPX_0 10         /*IOPX_0的值的索引*/
 
-#define C_IOZ_0 11          /*IOZ_0的值的索引*/
+#define C_OTPY_0 11          /*OTPY_0的值的索引*/
+#define C_OTPY_1 12          /*OTPY_1的值的索引*/
+#define C_IOPY_0 13         /*IOPY_0的值的索引*/
+
+#define C_OTPZ_0 14          /*OTPZ_0的值的索引*/
+#define C_OTPZ_1 15          /*OTPZ_1的值的索引*/
+#define C_IOPZ_0 16         /*IOPZ_0的值的索引*/
+
+#define C_IOX_0 17          /*IOX_0的值的索引*/
+#define C_IOY_0 18          /*IOY_0的值的索引*/
+#define C_IOZ_0 19          /*IOZ_0的值的索引*/
 
 struct Table
 {
@@ -155,7 +165,8 @@ const long long_init[] = {
 const char char_init[] = {
         0x10 ,0x80 ,0x00 ,0x00 ,0x00 ,
         0x00 ,0x0b ,0x00 ,0x00 ,0x00 ,
-        0x00 ,0xe0 ,0x00 ,0x00 ,0x00 ,
+        0x00 ,0x00 ,0x00 ,0x00 ,0x00 ,
+        0x00 ,0x00 ,0xe0 ,0x00 ,0x00 ,
 };
 
 class SparkInfo : public QObject
