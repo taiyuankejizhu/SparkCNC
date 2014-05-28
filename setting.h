@@ -8,6 +8,8 @@
 #define BEEP_FILE "/dev/beep"
 #define SPI_FILE  "/dev/spidev1.0"
 
+#define SCALE 1     /*光栅尺的刻度，1微米，5微米*/
+
 /*FM25V02 ADDR: 0x000000 ~ 0x007FFF*/
 #define X_AXIS_ADDR 0x000000
 #define Y_AXIS_ADDR 0x000100

@@ -10,6 +10,33 @@
     #define ARM
 #endif
 
+/*数据表格中的深度栏自动排序规则*/
+class QuoteItem: public QStandardItem
+{
+public:
+    QuoteItem(){}
+    QuoteItem(const QString &text):QStandardItem(text)
+    {
+    }
+    QuoteItem(const QuoteItem &other):QStandardItem(other)
+    {
+    }
+    QuoteItem &operator=(const QuoteItem &other)
+    {
+        QStandardItem::operator=(other);
+        return *this;
+    }
+    virtual bool operator<(const QStandardItem &other) const
+    {
+        const QVariant l = data(Qt::DisplayRole), r = other.data(Qt::DisplayRole);
+        if (column() == other.column())
+        {
+            return l.toDouble() < r.toDouble();
+        }
+        return QStandardItem::operator<(other);
+    }
+};
+
 /*蜂鸣器文件描述符*/
 static int beep_fb;
 
@@ -345,9 +372,8 @@ void MainInterface::commandSwitch(char status ,char type ,char slot,char index)
 void MainInterface::tableAddRow(int i)
 {
     i = model->rowCount() - 1;
-    QStandardItem* item1 = new QStandardItem();
+    QuoteItem* item1 = new QuoteItem(toString(spark_info->table.Shendu[i]));
     item1->setTextAlignment(Qt::AlignCenter);
-    item1->setData(spark_info->table.Shendu[i] ,Qt::EditRole);
     QStandardItem* item2 = new QStandardItem(QString::number(spark_info->table.Dianliu[i]));
     item2->setTextAlignment(Qt::AlignCenter);
     QStandardItem* item3 = new QStandardItem(QString::number(spark_info->table.Maikuan[i]));
@@ -516,10 +542,12 @@ void MainInterface::tableDataUpdate()
 
     for(int i=0 ;i < TABLE_ROWS;i++)
     {
+
         if(spark_info->table.Index[i] > 0){
-            QStandardItem* item1 = new QStandardItem();
+
+            QuoteItem* item1 = new QuoteItem(toString(spark_info->table.Shendu[i]));
             item1->setTextAlignment(Qt::AlignCenter);
-            item1->setData(spark_info->table.Shendu[i] ,Qt::EditRole);
+
             QStandardItem* item2 = new QStandardItem(QString::number(spark_info->table.Dianliu[i]));
             item2->setTextAlignment(Qt::AlignCenter);
             QStandardItem* item3 = new QStandardItem(QString::number(spark_info->table.Maikuan[i]));
@@ -651,7 +679,7 @@ void MainInterface::submitTable()
             qDebug()<<"end"<<i;
         }
 
-        spark_info->table.Shendu[i] = model->item(i,j++)->text().toInt(&ok ,10);
+        spark_info->table.Shendu[i] = model->item(i,j++)->text().toDouble(&ok) * 1000;
         spark_info->table.Dianliu[i] = model->item(i,j++)->text().toUInt(&ok ,10);
         spark_info->table.Maikuan[i] = model->item(i,j++)->text().toUInt(&ok ,10);
         spark_info->table.Xiuzhi[i] = model->item(i,j++)->text().toUInt(&ok ,10);
@@ -690,44 +718,7 @@ void MainInterface::funcbarUpdate(int i)
 void MainInterface::XYZ_Update(int i)
 {
     QString s;
-
-    int m = 0;
-    long tmp = 0;
-    long g = 10000000;
-    char ch = '0';
-    bool dot = false;
-    bool first = false;
-
-    tmp = spark_info->l_array[i];
-
-    if(tmp < 0)
-        s.append('-');
-
-    for(m = 0;m < 7;m++){
-        if(m == 4){
-            if(!first){
-                s.append('0');
-                s.append('.');
-                first = true;
-            }
-            else
-                s.append('.');
-            dot = true;
-        }
-        tmp = spark_info->l_array[i] % g;
-        g = g / 10;
-        tmp = tmp / g;
-        tmp = abs(tmp);
-        ch = tmp & 0xFF;
-        ch = ch + 48;
-
-        if(ch != '0'){
-            first =true;
-        }
-
-        if(first)
-            s.append(ch);
-    }
+    s = toString(spark_info->l_array[i]);
 
 #ifdef ARM
 
@@ -770,6 +761,51 @@ void MainInterface::XYZ_Update(int i)
         break;
     }
 
+}
+
+QString MainInterface::toString(long l)
+{
+    QString s;
+
+    int m = 0;
+    long tmp = 0;
+    long g = 10000000;
+    char ch = '0';
+    bool dot = false;
+    bool first = false;
+
+    tmp = l;
+
+    if(tmp < 0)
+        s.append('-');
+
+    for(m = 0;m < 7;m++){
+        if(m == 4){
+            if(!first){
+                s.append('0');
+                s.append('.');
+                first = true;
+            }
+            else
+                s.append('.');
+            dot = true;
+        }
+        tmp = l % g;
+        g = g / 10;
+        tmp = tmp / g;
+        tmp = abs(tmp);
+        ch = tmp & 0xFF;
+        ch = ch + 48;
+
+        if(ch != '0'){
+            first =true;
+        }
+
+        if(first)
+            s.append(ch);
+    }
+
+    return s;
 }
 
 MainInterface::~MainInterface()
