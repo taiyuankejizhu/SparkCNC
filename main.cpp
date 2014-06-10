@@ -7,7 +7,7 @@
 #include "sparkinfo.h"
 #include "qdebug.h"
 
-#if(QT_VERSION == 0x040704)
+#if(QT_VERSION == 0x040806)
     #define X86
 #else
     #define ARM
