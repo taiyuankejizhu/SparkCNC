@@ -1,12 +1,5 @@
 #include "qcomboxtime.h"
-
-/*根据Qt编译器的版本判断目标机的类型*/
-
-#if(QT_VERSION == 0x040704)
-    #define X86
-#else
-    #define ARM
-#endif
+#include "setting.h"
 
 QcomboxTime::QcomboxTime(QWidget *parent,QString l,bool b) :
     Qcombox(parent , l )

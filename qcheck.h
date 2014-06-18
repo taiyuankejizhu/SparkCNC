@@ -27,7 +27,7 @@ private:
     QColor t_color;
     QColor r_color;
     QColor l_color;
-
+    //QPixmap pix;
 signals:
 
 public slots:

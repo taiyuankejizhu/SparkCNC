@@ -5,7 +5,7 @@
 Qparameter::Qparameter(QWidget *parent) :
     QWidget(parent)
 {
-    pad   = 2;
+    pad   = 3;
     value_h = 0;
     value_t = 0;
     max_value_h = 255;
@@ -23,7 +23,7 @@ Qparameter::Qparameter(QWidget *parent) :
 Qparameter::Qparameter(QWidget *parent ,QString l ,unsigned int maxh ,unsigned int minh ,unsigned int ih,unsigned int maxt ,unsigned int mint ,unsigned int it):
     QWidget(parent)
 {
-    pad   = 2;
+    pad   = 3;
 
     max_value_h = maxh;
     min_value_h = minh;
@@ -48,8 +48,10 @@ void Qparameter::drawBackground(QPainter *painter)
     painter->save();
 
     QLinearGradient lg1(0, 0, 0, height());
-    lg1.setColorAt(0, QColor(255, 255, 255));
-    lg1.setColorAt(1, QColor(0, 0, 0));
+    lg1.setColorAt(0.0, Qt::white);
+    lg1.setColorAt(0.3, Qt::black);
+    lg1.setColorAt(0.7, Qt::black);
+    lg1.setColorAt(1.0, Qt::white);
 
     /*画边框色*/
     painter->setPen(r_color);

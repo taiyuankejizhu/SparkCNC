@@ -8,7 +8,7 @@
 Qcombox::Qcombox(QWidget *parent ,QString l ,unsigned int i):
     QWidget(parent)
 {
-    pad   = 2 ;
+    pad   = 3 ;
     value = "" ;
     label = l;
     index = i;
@@ -22,9 +22,11 @@ void Qcombox::drawBackground(QPainter *painter)
 {
     painter->save();
 
-    QLinearGradient lg1(0, height()/2, 0, height());
-    lg1.setColorAt(0, QColor(255, 255, 255));
-    lg1.setColorAt(1, QColor(0, 0, 0));
+    QLinearGradient lg1(0, 0, 0, height());
+    lg1.setColorAt(0.0, Qt::white);
+    lg1.setColorAt(0.3, Qt::black);
+    lg1.setColorAt(0.7, Qt::black);
+    lg1.setColorAt(1.0, Qt::white);
 
     painter->setPen(r_color);
     painter->setBrush(r_color);

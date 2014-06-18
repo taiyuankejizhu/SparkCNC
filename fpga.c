@@ -8,7 +8,8 @@
 #include "mtd/mtd-user.h"
 
 /*根据Qt编译器的版本判断目标机的类型*/
-#define X86
+#define ISA
+//#define GMPI
 
 /*存储数据接口的文件描述符*/
 static int fpga_fd;
@@ -314,11 +315,11 @@ uint32 ISA_Write(uint32 addr ,uint8 *pBuf ,uint32 num)
 uint8 FPGA_Init(void)
 {
     uint8 ret = 0;
-#ifdef ARM
+#ifdef GPMI
     ret = GPMI_Init();
 #endif
 
-#ifdef X86
+#ifdef ISA
     ret = ISA_Init();
 #endif
     return ret;
@@ -335,10 +336,10 @@ uint8 FPGA_Init(void)
 */
 void FPGA_Info(void)
 {
-#ifdef ARM
+#ifdef GPMI
     GPMI_Info();
 #endif
-#ifdef X86
+#ifdef ISA
     ISA_Info();
 #endif
 }
@@ -357,10 +358,10 @@ void FPGA_Info(void)
 uint32 FPGA_Read(uint32 addr ,uint8 *pBuf ,uint32 num)
 {
     uint32 ret = 0;
-#ifdef ARM
+#ifdef GPMI
     ret = GPMI_Read(addr ,pBuf ,num);
 #endif
-#ifdef X86
+#ifdef ISA
     ret = ISA_Read(addr ,pBuf ,num);
 #endif
     return ret;
@@ -380,10 +381,10 @@ uint32 FPGA_Read(uint32 addr ,uint8 *pBuf ,uint32 num)
 uint32 FPGA_Write(uint32 addr ,uint8 *pBuf ,uint32 num)
 {
     uint32 ret = 0;
-#ifdef ARM
+#ifdef GPMI
     ret = GPMI_Write(addr ,pBuf ,num);
 #endif
-#ifdef X86
+#ifdef ISA
     ret = ISA_Write(addr ,pBuf ,num);
 #endif
     return ret;
@@ -892,9 +893,11 @@ void IOZ0_Write(uint8 c)
 
     uint8 out[2];
 
+    memset(out ,0x01 ,sizeof out);
+    FPGA_Write(Z_OFFSET ,out ,1);
+
     memset(out ,c ,sizeof out);
-    out[0] = 0x01;
-    FPGA_Write(Z_OFFSET ,out ,2);
+    FPGA_Write(Z_OFFSET+1 ,out ,1);
 
 }
 
@@ -913,10 +916,10 @@ void OSC0_Write(uint8 c)
     uint8 out[2];
 
     memset(out ,0x01 ,sizeof out);
-    FPGA_Write(Z_OFFSET ,out ,1);
+    FPGA_Write(OSC_OFFSET ,out ,1);
 
     memset(out ,c ,sizeof out);
-    FPGA_Write(Z_OFFSET+1 ,out ,1);
+    FPGA_Write(OSC_OFFSET+1 ,out ,1);
 
 }
 
@@ -935,10 +938,10 @@ void OSC1_Write(uint8 c)
     uint8 out[2];
 
     memset(out ,0x01 ,sizeof out);
-    FPGA_Write(Z_OFFSET ,out ,1);
+    FPGA_Write(OSC_OFFSET ,out ,1);
 
     memset(out ,c ,sizeof out);
-    FPGA_Write(Z_OFFSET+2 ,out ,1);
+    FPGA_Write(OSC_OFFSET+2 ,out ,1);
 
 }
 
@@ -957,10 +960,10 @@ void OSC2_Write(uint8 c)
     uint8 out[2];
 
     memset(out ,0x02 ,sizeof out);
-    FPGA_Write(Z_OFFSET ,out ,1);
+    FPGA_Write(OSC_OFFSET ,out ,1);
 
     memset(out ,c ,sizeof out);
-    FPGA_Write(Z_OFFSET+3 ,out ,1);
+    FPGA_Write(OSC_OFFSET+3 ,out ,1);
 }
 
 /*

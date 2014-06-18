@@ -4,11 +4,12 @@
 #include <QMouseEvent>
 #include <QFontMetricsF>
 #include <QApplication>
+#include <qdebug.h>
 
 Qcheck::Qcheck(QWidget *parent) :
     QWidget(parent)
 {
-    pad   = 2 ;
+    pad   = 3 ;
     check = false ;
     label = "";
     index = 0;
@@ -17,12 +18,13 @@ Qcheck::Qcheck(QWidget *parent) :
     t_color = QColor(0,255,0);
     l_color = QColor(0,0,0);
     r_color = QColor(0,0,0);
+    //pix = QPixmap(":/icon.png");
 }
 
 Qcheck::Qcheck(QWidget *parent ,QString l,unsigned int i):
     QWidget(parent)
 {
-    pad   = 2 ;
+    pad   = 3 ;
     check = false ;
     label = l;
     index = i;
@@ -31,15 +33,23 @@ Qcheck::Qcheck(QWidget *parent ,QString l,unsigned int i):
     t_color = QColor(0,255,0);
     l_color = QColor(0,0,0);
     r_color = QColor(0,0,0);
+    //pix = QPixmap(":/combox.png");
 }
 
 void Qcheck::drawBackground(QPainter *painter)
 {
     painter->save();
-
+/*
+    setAutoFillBackground(true);
+    QPalette palette;
+    palette.setBrush(QPalette::Background, QBrush(pix));
+    setPalette(palette);
+*/
     QLinearGradient lg1(0, 0, 0, height());
-    lg1.setColorAt(0, QColor(255, 255, 255));
-    lg1.setColorAt(1, QColor(0, 0, 0));
+    lg1.setColorAt(0.0, Qt::white);
+    lg1.setColorAt(0.3, Qt::black);
+    lg1.setColorAt(0.7, Qt::black);
+    lg1.setColorAt(1.0, Qt::white);
 
     painter->setPen(r_color);
     painter->setBrush(r_color);

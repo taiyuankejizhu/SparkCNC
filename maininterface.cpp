@@ -1,14 +1,8 @@
 #include "maininterface.h"
 #include "ui_maininterface.h"
 #include "sparkinfo.h"
+#include "setting.h"
 #include "qdebug.h"
-
-/*根据Qt编译器的版本判断目标机的类型*/
-#if(QT_VERSION == 0x040704)
-    #define X86
-#else
-    #define ARM
-#endif
 
 /*数据表格中的深度栏自动排序规则*/
 class QuoteItem: public QStandardItem

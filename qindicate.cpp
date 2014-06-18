@@ -4,7 +4,7 @@
 Qindicate::Qindicate(QWidget *parent) :
     QWidget(parent)
 {
-    pad   = 2;
+    pad   = 3;
     value = 0;
     max_value = 255;
     min_value = 0;
@@ -18,7 +18,7 @@ Qindicate::Qindicate(QWidget *parent) :
 Qindicate::Qindicate(QWidget *parent ,QString l ,unsigned int max ,unsigned int min ,unsigned int i):
     QWidget(parent)
 {
-    pad   = 2;
+    pad   = 3;
     value = 0;
     max_value = max;
     min_value = min;
@@ -35,8 +35,10 @@ void Qindicate::drawBackground(QPainter *painter)
     painter->save();
 
     QLinearGradient lg1(0, 0, 0, height());
-    lg1.setColorAt(0, QColor(255, 255, 255));
-    lg1.setColorAt(1, QColor(0, 0, 0));
+    lg1.setColorAt(0.0, Qt::white);
+    lg1.setColorAt(0.3, Qt::black);
+    lg1.setColorAt(0.7, Qt::black);
+    lg1.setColorAt(1.0, Qt::white);
 
     /*画背景色*/
     painter->setPen(r_color);
