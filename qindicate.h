@@ -35,6 +35,7 @@ private:
     QColor b_color;
     QColor r_color;
     QColor l_color;
+    QColor z_color;
 
 signals:
 

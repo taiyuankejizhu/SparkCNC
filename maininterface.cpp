@@ -582,26 +582,41 @@ void MainInterface::tableRollUpdate()
     unsigned int row = 0;
     unsigned int column = 0;
     if(table_state == TABLE_SHOW){
-        for(row = 0;row < abs(model->rowCount());row++){
-            QBrush brush;
-            if(row == spark_info->uint_array[UINT_CURRENT_ROM]){
-                brush = QBrush(SELECT_COLOR);
+        if(spark_info->uint_array[UINT_CURRENT_ROM] < TABLE_ROWS&&
+           spark_info->uint_array[UINT_START_ROW] < TABLE_ROWS&&
+           spark_info->uint_array[UINT_END_ROW] < TABLE_ROWS){
+            for(row = 0;row < abs(model->rowCount());row++){
+                QBrush brush;
+                if(row == spark_info->uint_array[UINT_CURRENT_ROM]){
+                    brush = QBrush(SELECT_COLOR);
+                }
+                else if(row < spark_info->uint_array[UINT_START_ROW]){
+                    brush = QBrush(UNSELECT_COLOR);
+                }
+                else if(row < spark_info->uint_array[UINT_CURRENT_ROM]){
+                    brush = QBrush(OK_COLOR);
+                }
+                else if(row <= spark_info->uint_array[UINT_END_ROW]){
+                    brush = QBrush(UNOK_COLOR);
+                }
+                else{
+                    brush = QBrush(UNSELECT_COLOR);
+                }
+                for(column = 0;column < 11;column ++){
+                    QStandardItem* item = model->item(row ,column);
+                    item->setBackground(brush);
+                }
             }
-            else if(row < spark_info->uint_array[UINT_START_ROW]){
+        }
+        /*没有加工选择 */
+        else{
+            for(row = 0;row < abs(model->rowCount());row++){
+                QBrush brush;
                 brush = QBrush(UNSELECT_COLOR);
-            }
-            else if(row < spark_info->uint_array[UINT_CURRENT_ROM]){
-                brush = QBrush(OK_COLOR);
-            }
-            else if(row <= spark_info->uint_array[UINT_END_ROW]){
-                brush = QBrush(UNOK_COLOR);
-            }
-            else{
-                brush = QBrush(UNSELECT_COLOR);
-            }
-            for(column = 0;column < 11;column ++){
-                QStandardItem* item = model->item(row ,column);
-                item->setBackground(brush);
+                for(column = 0;column < 11;column ++){
+                    QStandardItem* item = model->item(row ,column);
+                    item->setBackground(brush);
+                }
             }
         }
     }
@@ -765,7 +780,6 @@ QString MainInterface::toString(long l)
     long tmp = 0;
     long g = 10000000;
     char ch = '0';
-    bool dot = false;
     bool first = false;
 
     tmp = l;
@@ -782,7 +796,6 @@ QString MainInterface::toString(long l)
             }
             else
                 s.append('.');
-            dot = true;
         }
         tmp = l % g;
         g = g / 10;

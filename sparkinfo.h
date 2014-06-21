@@ -10,8 +10,8 @@
 
 #define B_LENGTH 20         /*布尔数组的长度*/
 #define UINT_LENGTH 10      /*无符号整型数组的长度*/
-#define L_LENGTH 20          /*长整型数组的长度*/
-#define C_LENGTH 20           /*字符型数组的长度*/
+#define L_LENGTH 20         /*长整型数组的长度*/
+#define C_LENGTH 20         /*字符型数组的长度*/
 
 #define B_UPDATE 0          /*布尔数组有更新的开关索引*/
 #define B_PUMP 1            /*冷却油泵的开关索引*/
@@ -152,7 +152,7 @@ const bool bool_init[] = {
 
 const unsigned int uint_init[] = {
         0, 0, 10, 0, 5,
-        0, 0, 0, 0, 0,
+        0, 0, 10, 10, 10,
 };
 
 const long long_init[] = {

@@ -15,26 +15,33 @@ Qcombox::Qcombox(QWidget *parent ,QString l ,unsigned int i):
     f_color = QColor(64,64,64);
     b_color = QColor(255,255,255);
     l_color = QColor(255,255,255);
-    r_color = QColor(0,0,0);
+    r_color = QColor(64,64,64);
+    z_color = QColor(128,128,128);
 }
 
 void Qcombox::drawBackground(QPainter *painter)
 {
     painter->save();
 
-    QLinearGradient lg1(0, 0, 0, height());
-    lg1.setColorAt(0.0, Qt::white);
-    lg1.setColorAt(0.3, Qt::black);
-    lg1.setColorAt(0.7, Qt::black);
-    lg1.setColorAt(1.0, Qt::white);
-
     painter->setPen(r_color);
     painter->setBrush(r_color);
-    painter->fillRect(0,0,width(),height(),lg1);
+    painter->fillRect(0,0,width(),height(),r_color);
 
+    painter->setPen(z_color);
+    painter->setBrush(z_color);
+    painter->fillRect(pad,pad,width()-2*pad,height()-2*pad,z_color);
+
+    int i;
     painter->setPen(b_color);
     painter->setBrush(b_color);
-    painter->fillRect(pad,pad,width()-2*pad,height()-2*pad,b_color);
+    /*Draw 3D effect border*/
+    for(i = 0;i < pad;i++){
+        painter->drawLine(0,i,width()-i-1,i);
+    }
+
+    for(i = 0;i < pad;i++){
+        painter->drawLine(i,0,i,height()-i-1);
+    }
 
     painter->restore();
 }
@@ -66,8 +73,8 @@ void Qcombox::drawWidget(QPainter *painter)
     /*Paint the label value*/
     //painter->translate(width()/2, (height()*3)/4);
 
-    painter->setPen(r_color);
-    painter->setBrush(r_color);
+    painter->setPen(l_color);
+    painter->setBrush(l_color);
 
     w = fm.size(Qt::TextSingleLine,value).width();
     h = fm.size(Qt::TextSingleLine,value).height();
@@ -105,7 +112,6 @@ void Qcombox::updateValue()
     long tmp = 0;
     long g = 10000000;
     char ch = '0';
-    bool dot = false;
     bool first = false;
 
     tmp = spark_info->l_array[index];
@@ -122,7 +128,6 @@ void Qcombox::updateValue()
             }
             else
                 s.append('.');
-            dot = true;
         }
         tmp = spark_info->l_array[index] % g;
         g = g / 10;

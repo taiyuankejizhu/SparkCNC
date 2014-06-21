@@ -40,7 +40,10 @@ void SparkThread::run()
                 spark_info->setLong(L_DEEP_TARGET ,spark_info->table.Shendu[spark_info->uint_array[UINT_CURRENT_ROM]]);
             }
             else{
-                spark_info->setUInt(UINT_CURRENT_ROM ,spark_info->uint_array[UINT_END_ROW]);
+                //spark_info->setUInt(UINT_CURRENT_ROM ,spark_info->uint_array[UINT_END_ROW]);
+                spark_info->setUInt(UINT_CURRENT_ROM ,TABLE_ROWS);
+                spark_info->setUInt(UINT_END_ROW ,TABLE_ROWS);
+                spark_info->setUInt(UINT_START_ROW ,TABLE_ROWS);
                 spark_info->setLong(L_DEEP_TARGET ,spark_info->table.Shendu[spark_info->uint_array[UINT_CURRENT_ROM]]);
 
                 spark_info->reverseBool(B_START);

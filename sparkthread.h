@@ -8,6 +8,7 @@
 #define UP 2      /*根据放电行参数中的排渣参数放电时间结束后上升一定高度*/
 #define DOWN 3    /*上升到位后再下降到与工件接触*/
 #define END 4        /*放电加工结束后回到开始时的位置*/
+#define TABLE_ROWS 10 /*表格长度*/
 
 class SparkThread : public QThread
 {
